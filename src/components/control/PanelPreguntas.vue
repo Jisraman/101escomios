@@ -1,84 +1,77 @@
 <template>
-    <div>
-  
-      <!-- Select -->
-      <el-select v-model="selectedOption" placeholder="Selecciona una opción">
+  <div>
+    <div style="display: flex; margin-left: auto; margin-right: auto; width: 70%;">
+      <el-select
+        v-model="selectedOption"
+        placeholder="Selecciona una Pregunta"
+        style="margin-right: auto; width: 80%;"
+      >
         <el-option v-for="option in options" :key="option" :label="option" :value="option" />
       </el-select>
-  
-      <!-- Tabla -->
-      <el-table :data="tableData" style="width: 100%; margin-top: 20px;">
-        <el-table-column prop="name" label="Nombre" />
-        <el-table-column prop="value" label="Valor" width="120" />
-      </el-table>
-  
-      <!-- Botones -->
-      <div style="margin-top: 20px;">
-        <el-button
-          v-for="(button, index) in buttons"
-          :key="index"
-          type="primary"
-          :style="{ backgroundColor: button.active ? 'red' : '' }"
-          @click="toggleButton(index)"
-        >
-          {{ button.label }}
-        </el-button>
-      </div>
-  
-      <!-- Botón de reproducción -->
-      <div style="margin-top: 20px;">
-        <el-button @click="playSong">Reproducir Canción</el-button>
-      </div>
-  
-      <!-- Campos de texto -->
-      <div style="margin-top: 20px;">
-        <div v-for="(field, index) in textFields" :key="index" style="margin-bottom: 10px;">
-          <el-input v-model="field.text" placeholder="Texto" />
-          <div>
-            <el-input-number v-model="field.number1" placeholder="Número 1" />
-            <el-input-number v-model="field.number2" placeholder="Número 2" />
-          </div>
-        </div>
-      </div>
+      <el-button type="primary">Siguiente</el-button>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        selectedOption: null,
-        options: ["Opción 1", "Opción 2", "Opción 3"],
-        tableData: Array.from({ length: 5 }, (_, i) => ({
-          name: `Fila ${i + 1}`,
-          value: Math.floor(Math.random() * 100),
-        })),
-        buttons: [
-          { label: "Botón 1", active: false },
-          { label: "Botón 2", active: false },
-        ],
-        textFields: [
-          { text: "", number1: null, number2: null },
-          { text: "", number1: null, number2: null },
-        ],
-      };
+
+    <!-- Tabla -->
+    <el-table :data="tableData" style="width: 100%; margin-top: 20px;">
+      <el-table-column prop="name" label="Nombre" />
+      <el-table-column prop="value" label="Valor" width="120" />
+      <!-- Columna personalizada para acciones -->
+      <el-table-column label="Acciones" width="200">
+        <template #default="scope">
+          <el-button
+            :type="scope.row.showing ? 'info' : 'primary'"
+            @click="toggleShow(scope.row)"
+          >
+            {{ scope.row.showing ? 'Ocultar' : 'Mostrar' }}
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "TablaPuntos",
+  data() {
+    return {
+      tableData: Array.from({ length: 5 }, (_, i) => ({
+        name: `Fila ${i + 1}`,
+        value: Math.floor(Math.random() * 100),
+        showing: false, // Controla el estado del botón
+      })),
+      broadcastChannel: null, // Canal de comunicación
+    };
+  },
+  mounted() {
+    // Crear el canal de comunicación con nombre 'appChannel'
+    this.broadcastChannel = new BroadcastChannel('appChannel');
+  },
+  beforeDestroy() {
+    // Cerrar el canal de comunicación cuando el componente se destruya
+    if (this.broadcastChannel) {
+      this.broadcastChannel.close();
+    }
+  },
+  methods: {
+    toggleShow(row) {
+      // Cambiar el estado del botón
+      row.showing = !row.showing;
+
+      // Enviar un mensaje al canal de comunicación
+      const action = row.showing ? "Mostrar" : "Ocultar";
+      this.broadcastChannel.postMessage({
+        action,
+        rowName: row.name,
+        value: row.value,
+      });
+
+      console.log(`${action} para la fila:`, row.name);
     },
-    methods: {
-      toggleButton(index) {
-        const button = this.buttons[index];
-        button.active = !button.active;
-        button.label = button.active ? "Activo" : `Botón ${index + 1}`;
-      },
-      playSong() {
-        alert("Reproduciendo canción...");
-      },
-    },
-  };
-  </script>
-  
-  <style>
-  .el-input-number {
-    margin-right: 10px;
-  }
-  </style>
-  
+  },
+};
+</script>
+
+<style>
+/* Opcional: Estilo para ajustar el diseño */
+</style>

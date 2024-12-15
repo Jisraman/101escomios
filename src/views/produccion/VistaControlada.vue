@@ -52,6 +52,8 @@ export default {
   },
   methods: {
     handleMessage(event) {
+      //console.log("MENSAJE")
+      //console.log(event.data)
       if (event.origin === window.location.origin || event.source === window) {
         const message = event.data;
 
