@@ -1,39 +1,52 @@
 <template>
   <div class="app-container">
-    <!-- Sidebar -->
-    <el-container>
-      <el-aside width="200px">
-        <el-menu @select="changeView">
-          <el-menu-item index="0" @click="openControlledWindow">Abrir Ventana Controlada</el-menu-item>
-          <el-menu-item index="1">Inicio</el-menu-item>
-          <el-menu-item index="2">Tablero</el-menu-item>
-        </el-menu>
-      </el-aside>
+    <el-main>
 
-      <!-- Main Content -->
-      <el-container>
-        <el-main>
-          <!-- Renderiza la vista seleccionada -->
-          <component :is="currentView" />
-        </el-main>
-      </el-container>
-    </el-container>
+      <!-- Renderiza la vista seleccionada -->
+      <el-row :gutter="10">
+        <el-col :span="8" style="display: grid;">
+          <!-- Botón de "Inicio" con tipo dinámico -->
+          <el-button 
+            @click="openControlledWindow" 
+            type="primary">
+            Presentacion
+          </el-button>
+        </el-col>
+        <el-col :span="8" style="display: grid;">
+          <!-- Botón de "Inicio" con tipo dinámico -->
+          <el-button 
+            @click="changeView('inicio')" 
+            :type="activeButton === 'inicio' ? 'success' : 'info'">
+            Inicio
+          </el-button>
+        </el-col>
+        <el-col :span="8" style="display: grid;">
+          <!-- Botón de "Tablero" con tipo dinámico -->
+          <el-button 
+            @click="changeView('tablero')" 
+            :type="activeButton === 'tablero' ? 'success' : 'info'">
+            Tablero
+          </el-button>
+        </el-col>
+      </el-row>
+
+      <!-- Panel de preguntas -->
+      <PanelPreguntas />
+    </el-main>
   </div>
 </template>
 
 <script>
 import PanelPreguntas from "@/components/control/PanelPreguntas.vue";
-import PanelInicio from "@/components/control/PanelInicio.vue";
 
 export default {
+  components: {
+    PanelPreguntas
+  },
   data() {
     return {
       controlledWindow: null, // Referencia a la ventana controlada
-      currentView: PanelInicio, // Componente actual a renderizar
-      views: {
-        1: PanelInicio,
-        2: PanelPreguntas,
-      },
+      activeButton: 'inicio', // Controla qué botón está activo
       broadcastChannel: null, // Canal de comunicación
     };
   },
@@ -42,7 +55,7 @@ export default {
     this.broadcastChannel = new BroadcastChannel('appChannel');
 
     // Escuchar mensajes del canal
-    this.broadcastChannel.addEventListener('message', this.handleBroadcastMessage);
+    //this.broadcastChannel.addEventListener('message', this.handleBroadcastMessage);
   },
   beforeDestroy() {
     // Cerrar el canal de comunicación cuando el componente se destruya
@@ -59,31 +72,30 @@ export default {
         "width=800,height=600"
       );
     },
-    changeView(viewIndex) {
-      // Actualiza la vista actual basada en el índice
-      this.currentView = this.views[viewIndex] || PanelInicio;
-      var message = (viewIndex == 1) ? "inicio" : (viewIndex == 2) ? "tablero" : null;
+    changeView(viewSelected) {
+      // Cambia la vista activa y actualiza el estado del botón
+      this.activeButton = viewSelected;
 
       // Enviar mensaje al canal para cambiar la vista en las vistas afectadas
-      this.broadcastChannel.postMessage({ view: message });
-
+      this.broadcastChannel.postMessage({ view: viewSelected });
+      
       // Si la ventana controlada está abierta, enviarle un mensaje también
       if (this.controlledWindow) {
-        this.controlledWindow.postMessage({ view: message }, "*");
+        this.controlledWindow.postMessage({ view: viewSelected }, "*");
       }
     },
-    handleBroadcastMessage(event) {
+    handleBroadcastMessage(/*event*/) {
       // Manejar mensajes recibidos del canal (cambio de vista)
-      const { view } = event.data;
+      /*const { view } = event.data;
       if (view && this.views[view]) {
         this.currentView = this.views[view];
-      }
+      }*/
     },
   },
 };
 </script>
 
-<style>
+<style scoped>
 .app-container {
   height: 100vh;
 }
