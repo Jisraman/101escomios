@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- Select y Botón Siguiente -->
     <div style="display: flex; margin-left: auto; margin-right: auto; width: 70%;">
       <el-select
         v-model="selectedOption"
@@ -8,7 +9,7 @@
       >
         <el-option v-for="option in options" :key="option" :label="option" :value="option" />
       </el-select>
-      <el-button type="primary">Siguiente</el-button>
+      <el-button type="primary" @click="goToNextOption">Siguiente</el-button>
     </div>
 
     <!-- Tabla -->
@@ -35,6 +36,8 @@ export default {
   name: "TablaPuntos",
   data() {
     return {
+      selectedOption: null, // Opción seleccionada
+      options: ["Opción 1", "Opción 2", "Opción 3"],
       tableData: Array.from({ length: 5 }, (_, i) => ({
         name: `Fila ${i + 1}`,
         value: Math.floor(Math.random() * 100),
@@ -67,6 +70,18 @@ export default {
       });
 
       console.log(`${action} para la fila:`, row.name);
+    },
+    goToNextOption() {
+      // Encuentra el índice de la opción seleccionada
+      const currentIndex = this.options.indexOf(this.selectedOption);
+      
+      // Mueve al siguiente índice, volviendo al inicio si es necesario
+      const nextIndex = (currentIndex + 1) % this.options.length;
+      
+      // Actualiza la opción seleccionada
+      this.selectedOption = this.options[nextIndex];
+
+      console.log(`Opción seleccionada: ${this.selectedOption}`);
     },
   },
 };

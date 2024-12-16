@@ -5,6 +5,13 @@ import router from './router'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import './plugins/style'
+import { createPinia, PiniaVuePlugin } from 'pinia'
+import './stores/store'
+
+
+Vue.use(PiniaVuePlugin)
+const pinia = createPinia()
+
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);
@@ -13,10 +20,12 @@ Vue.use(ElementUI);
 
 new Vue({
   router,
+  pinia,
   render: h => h(App),  // La vista controladora
 }).$mount('#app');
 
 new Vue({
   router,
+  pinia,
   render: h => h(SecondaryApp), // La vista secundaria con el router
 }).$mount('#SecondaryApp');

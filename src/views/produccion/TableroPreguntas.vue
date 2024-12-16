@@ -1,12 +1,40 @@
 <template>
   <div class="background">
-    <!-- Tablero de puntos -->
-    <div class="points-board">
-      <h1>Tablero de Puntos</h1>
-      <p>Puntos: {{ points }}</p>
+    <!-- Contenedor principal del tablero -->
+    <div class="board">
+      <!-- Puntuaciones de los equipos -->
+      <div class="scores">
+        <div class="team">
+          <h2>{{ equipoA.nombre }}</h2>
+          <p>{{ equipoA.puntuacion }}</p>
+        </div>
+        <div class="team">
+          <h2>{{ equipoB.nombre }}</h2>
+          <p>{{ equipoB.puntuacion }}</p>
+        </div>
+      </div>
+
+      <!-- Pregunta actual -->
+      <div class="question">
+        <h1>{{ pregunta }}</h1>
+      </div>
+
+      <!-- Respuestas -->
+      <div class="answers">
+        <div 
+          v-for="(respuesta, index) in respuestas" 
+          :key="index" 
+          class="answer" 
+          :class="{ revealed: respuesta.mostrar }"
+        >
+          <span>{{ respuesta.texto }}</span> <!-- Respuesta a la izquierda -->
+          <span v-if="respuesta.mostrar">({{ respuesta.puntos }})</span> <!-- Puntaje a la derecha -->
+        </div>
+      </div>
+
     </div>
 
-    <!-- Grid de puntos animados -->
+    <!-- Efectos de puntos brillantes -->
     <div class="grid-container">
       <div
         v-for="(sparkle, index) in sparkles"
@@ -20,39 +48,68 @@
 
 <script>
 export default {
-  name: "TriviaBackground",
+  name: "TriviaBoard",
   data() {
     return {
-      points: 0, // Puntos dinámicos
-      sparkles: [], // Almacena puntos blancos en una cuadrícula
-      rows: 15, // Número de filas
-      cols: 15, // Número de columnas
+      // Equipos y sus puntos
+      equipoA: { nombre: "Equipo A", puntuacion: 0 },
+      equipoB: { nombre: "Equipo B", puntuacion: 0 },
+      // Pregunta actual
+      pregunta: "¿Cuál es la capital de Francia?",
+      // Respuestas y si están reveladas
+      respuestas: [
+        { texto: "París", puntos: 50, mostrar: false },
+        { texto: "Marsella", puntos: 30, mostrar: false },
+        { texto: "Lyon", puntos: 20, mostrar: false },
+        { texto: "Toulouse", puntos: 10, mostrar: false },
+        { texto: "Niza", puntos: 5, mostrar: false },
+      ],
+      // Animación de puntos brillantes
+      sparkles: [],
+      rows: 15,
+      cols: 15,
     };
   },
-  props: {
-    initialPoints: {
-      type: Number,
-      default: 0,
-    },
-  },
   mounted() {
-    this.points = this.initialPoints;
-
-    // Generar puntos en cuadrícula al iniciar
     this.createGrid();
-
-    // Empezar animaciones aleatorias
     this.startRandomAnimations();
+    // Probar revelación de respuestas con un retraso
+  setTimeout(() => {
+    this.revelarRespuesta(0); // Revelar la primera respuesta (índice 0)
+    setTimeout(() => {
+      this.revelarRespuesta(2); // Revelar la tercera respuesta (índice 2) después
+    }, 1000); // Segundo retraso para la siguiente respuesta
+  }, 1000);
   },
   methods: {
+    // Revelar una respuesta específica
+    revelarRespuesta(indiceRespuesta) {
+      if (this.respuestas[indiceRespuesta]) {
+        this.$set(this.respuestas, indiceRespuesta, {
+          ...this.respuestas[indiceRespuesta],
+          mostrar: true,
+        });
+      }
+    },
+
+    // Cambiar la pregunta
+    mostrarPregunta(nuevaPregunta, nuevasRespuestas) {
+      this.pregunta = nuevaPregunta;
+      this.respuestas = nuevasRespuestas.map((respuesta) => ({
+        texto: respuesta.texto,
+        puntos: respuesta.puntos,
+        mostrar: false,
+      }));
+    },
+    // Crear puntos brillantes en el fondo
     createGrid() {
-      const total = this.rows * this.cols ; // Total de puntos
-      const cellWidth = 100 / this.cols; // Ancho de celda (%)
-      const cellHeight = 100 / this.rows; // Altura de celda (%)
+      const total = this.rows * this.cols;
+      const cellWidth = 100 / this.cols;
+      const cellHeight = 100 / this.rows;
 
       for (let i = 0; i < total; i++) {
-        const row = Math.floor(i / this.cols); // Fila actual
-        const col = i % this.cols; // Columna actual
+        const row = Math.floor(i / this.cols);
+        const col = i % this.cols;
 
         const sparkle = {
           style: {
@@ -61,45 +118,43 @@ export default {
             background: "rgba(255, 255, 255, 0.8)",
             borderRadius: "50%",
             position: "absolute",
-            top: `${row * cellHeight}%`, // Posición Y en base a la fila
-            left: `${col * cellWidth}%`, // Posición X en base a la columna
-            transition: "opacity 0.5s, transform 0.5s", // Suaviza cambios
-            opacity: 0.6, // Inicialmente tenue
+            top: `${row * cellHeight}%`,
+            left: `${col * cellWidth}%`,
+            transition: "opacity 0.5s, transform 0.5s",
+            opacity: 0.6,
           },
         };
 
         this.sparkles.push(sparkle);
       }
     },
+    // Animaciones aleatorias de los puntos brillantes
     startRandomAnimations() {
       setInterval(() => {
-        // Seleccionar un punto aleatorio para animar
         const randomIndex = Math.floor(Math.random() * this.sparkles.length);
         const sparkle = this.sparkles[randomIndex];
 
-        // Cambiar aleatoriamente el brillo y tamaño
-        sparkle.style.opacity = Math.random() * 0.8 + 0.8; // Más brillante
+        sparkle.style.opacity = Math.random() * 0.8 + 0.8;
         sparkle.style.transform = `scale(${Math.random() * 0.8 + 1})`;
 
-        // Volver al estado inicial después de un tiempo
         setTimeout(() => {
-          sparkle.style.opacity = 0.6; // Regresar al estado tenue
-          sparkle.style.transform = "scale(1)"; // Escala normal
+          sparkle.style.opacity = 0.6;
+          sparkle.style.transform = "scale(1)";
         }, 500);
-      }, 5); // Cambiar un punto cada 300ms
+      }, 300);
     },
   },
 };
 </script>
 
 <style scoped>
-/* Fondo animado con degradado */
+/* Fondo animado */
 .background {
-  position:fixed;
+  position: fixed;
   width: 100%;
   height: 100vh;
-  margin: 0px !important;
-  overflow: hidden !important;
+  margin: 0;
+  overflow: hidden;
   background: linear-gradient(120deg, #ff0080, #8000ff);
   background-size: 200% 200%;
   animation: gradientAnimation 4s ease infinite;
@@ -108,7 +163,7 @@ export default {
   align-items: center;
 }
 
-/* Animación del degradado */
+/* Animación de degradado */
 @keyframes gradientAnimation {
   0% {
     background-position: 0% 50%;
@@ -121,48 +176,107 @@ export default {
   }
 }
 
-/* Tablero de puntos */
-.points-board {
+/* Contenedor del tablero */
+.board {
   position: relative;
-  width: 50%;
-  max-width: 600px;
-  padding: 20px;
+  width: 60%;
+  max-width: 800px;
   background: rgba(0, 0, 0, 0.8);
   border-radius: 20px;
-  text-align: center;
+  padding: 20px;
   color: white;
   font-family: "Arial", sans-serif;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
   z-index: 2;
-  overflow-y: hidden !important;
-  
-
+  text-align: center;
+  border: 5px solid gold; /* Marco dorado */
+  opacity: 1; /* Visibilidad completa */
 }
 
-.points-board h1 {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
+
+/* Sección de puntuaciones */
+.scores {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
-.points-board p {
+.team h2 {
+  margin: 0;
   font-size: 1.5rem;
+}
+
+.team p {
+  font-size: 1.2rem;
   margin: 0;
 }
 
-/* Contenedor para los puntos */
+/* Pregunta */
+.question h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+/* Respuestas */
+.answers {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@keyframes revealAnimation {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.answer {
+  display: flex;
+  justify-content: space-between; /* Para alinear respuesta y puntaje */
+  align-items: center;
+  font-size: 1.5rem;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  opacity: 0; /* Totalmente invisible al inicio */
+  transform: translateX(-100%); /* Fuera del área visible */
+  overflow: hidden; /* Evitar que contenido sobresalga */
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.answer.revealed {
+  opacity: 1; /* Mostrar respuesta */
+  transform: translateX(0); /* Mover a su posición */
+  background: rgba(255, 255, 255, 0.3); /* Fondo más visible */
+}
+
+.answer span:first-child {
+  flex: 1; /* La respuesta ocupa todo el espacio disponible */
+  text-align: left; /* Alineación a la izquierda */
+}
+
+.answer span:last-child {
+  text-align: right; /* Puntaje a la derecha */
+  margin-left: 20px;
+  white-space: nowrap; /* Evitar que el puntaje se rompa en líneas */
+}
+
+
+
+/* Puntos brillantes */
 .grid-container {
   position: absolute;
   width: 100%;
   height: 100%;
-  align-items: center;
-  align-content: center;
-  padding-left: 30px;
-  pointer-events: none; /* Los puntos no interfieren con los clics */
-  overflow-y: hidden !important;
-
+  pointer-events: none;
 }
 
-/* Puntos animados */
 .sparkle {
   will-change: opacity, transform;
   pointer-events: none;

@@ -112,27 +112,82 @@ export default {
   position: absolute;
   width: 735px; /* Ajusta el tamaño del logo */
   height: 500px;
-  background: url("../../assets/logoprograma2.png") no-repeat center center; /* Reemplaza con la ruta */
-  background-size: contain;
-  z-index: 1;
-  border-radius: 100%; /* Ajusta la forma del óvalo */
-  scale: 1;
-  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.6); /* Sombra interna para emular el resplandor desde adentro */
-  animation: glow 2s infinite alternate; /* Llama la animación del resplandor */
+  background: radial-gradient(
+    circle,
+    rgba(255, 215, 0, 1) 30%,  /* Centro dorado */
+    rgba(255, 193, 7, 1) 40%, /* Amarillo oscuro */
+    rgba(255, 140, 0, 1) 80%, /* Naranja cálido */
+    transparent 100%           /* Transición a transparente */
+  );
+  background-size: cover;
+  z-index: 1; /* Mantener en el nivel más bajo */
+  border-radius: 100%; /* Forma del óvalo */
+  box-shadow: 
+    inset 0 0 10px rgba(255, 255, 255, 0.4), /* Brillo interno */
+    0 0 20px rgba(255, 255, 255, 0.3),       /* Resplandor externo tenue */
+    0 0 60px rgba(255, 193, 7, 0.5);         /* Resplandor dorado más amplio */
+  animation: glow 2s infinite alternate; /* Animación del resplandor */
 }
+
+/* Agrega una capa para la imagen */
+.logo::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("../../assets/logoprograma2.png") no-repeat center center; /* Ruta de la imagen */
+  background-size: contain; /* Ajusta el tamaño de la imagen */
+  z-index: 2; /* Capa por encima del gradiente */
+  border-radius: 100%; /* Asegura que sigue la forma del óvalo */
+}
+
 
 /* Animación de resplandor ajustada */
 @keyframes glow {
   0% {
-    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.5), inset 0 0 30px rgba(255, 255, 255, 0.7);
+    box-shadow: 
+      inset 0 0 10px rgba(255, 255, 255, 0.2),
+      inset -5px -5px 20px rgba(255, 255, 255, 0.3),
+      inset 5px 10px 30px rgba(255, 255, 255, 0.5),
+      0 0 15px rgba(255, 255, 255, 0.4),
+      0 0 40px rgba(255, 255, 255, 0.6);
+  }
+  25% {
+    box-shadow: 
+      inset 0 0 15px rgba(255, 255, 255, 0.4),
+      inset -8px -8px 25px rgba(255, 255, 255, 0.3),
+      inset 10px 15px 35px rgba(255, 255, 255, 0.7),
+      0 0 20px rgba(255, 255, 255, 0.5),
+      0 0 50px rgba(255, 255, 255, 0.7);
   }
   50% {
-    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.4), inset 0 0 30px rgba(255, 255, 255, 0.6), inset 0 0 40px rgba(255, 255, 255, 0.8);
+    box-shadow: 
+      inset 0 0 20px rgba(255, 255, 255, 0.3),
+      inset -10px -10px 30px rgba(255, 255, 255, 0.4),
+      inset 15px 20px 40px rgba(255, 255, 255, 0.6),
+      0 0 25px rgba(255, 255, 255, 0.6),
+      0 0 60px rgba(255, 255, 255, 0.8);
+  }
+  75% {
+    box-shadow: 
+      inset 0 0 15px rgba(255, 255, 255, 0.5),
+      inset -12px -12px 20px rgba(255, 255, 255, 0.3),
+      inset 12px 18px 35px rgba(255, 255, 255, 0.5),
+      0 0 30px rgba(255, 255, 255, 0.5),
+      0 0 70px rgba(255, 255, 255, 0.9);
   }
   100% {
-    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.5), inset 0 0 30px rgba(255, 255, 255, 0.7);
+    box-shadow: 
+      inset 0 0 10px rgba(255, 255, 255, 0.2),
+      inset -5px -5px 20px rgba(255, 255, 255, 0.3),
+      inset 5px 10px 30px rgba(255, 255, 255, 0.5),
+      0 0 15px rgba(255, 255, 255, 0.4),
+      0 0 40px rgba(255, 255, 255, 0.6);
   }
 }
+
 
 
 /* Contenedor de puntos */
