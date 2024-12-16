@@ -7,23 +7,42 @@
         placeholder="Selecciona una Pregunta"
         style="margin-right: auto; width: 80%;"
       >
-        <el-option v-for="option in options" :key="option" :label="option" :value="option" />
+        <el-option 
+          v-for="(option, index) in options" 
+          :key="index" 
+          :label="option.pregunta" 
+          :value="option.pregunta" 
+        />
       </el-select>
       <el-button type="primary" @click="goToNextOption">Siguiente</el-button>
+
+      <el-button type="primary" @click="showQuestion">Mostrar</el-button>
     </div>
 
     <!-- Tabla -->
     <el-table :data="tableData" style="width: 100%; margin-top: 20px;">
-      <el-table-column prop="name" label="Nombre" />
-      <el-table-column prop="value" label="Valor" width="120" />
+      <el-table-column prop="respuesta" label="Respuesta" />
+      <el-table-column prop="popularidad" label="Popularidad" />
       <!-- Columna personalizada para acciones -->
-      <el-table-column label="Acciones" width="200">
+      <el-table-column label="Acciones" width="600">
         <template #default="scope">
           <el-button
             :type="scope.row.showing ? 'info' : 'primary'"
-            @click="toggleShow(scope.row)"
+            @click="toggleShow(scope.row, scope.$index);showAnswer(scope.$index)" 
           >
-            {{ scope.row.showing ? 'Ocultar' : 'Mostrar' }}
+            {{ scope.row.showing ? 'Ocultar en tablero' : 'Mostrar en tablero' }}
+          </el-button>
+          <el-button
+            type="danger"
+            @click="showAnswer(scope.$index)" 
+          >
+            {{ "equipo1" }}
+          </el-button>
+          <el-button
+            type="success"
+            @click="showAnswer(scope.$index)" 
+          >
+            {{ "equipo2" }}
           </el-button>
         </template>
       </el-table-column>
@@ -32,61 +51,82 @@
 </template>
 
 <script>
+import { preguntas } from '../../stores/preguntas'
+import { usePreguntasStore } from '../../stores/store'
+
 export default {
   name: "TablaPuntos",
   data() {
     return {
       selectedOption: null, // Opción seleccionada
-      options: ["Opción 1", "Opción 2", "Opción 3"],
-      tableData: Array.from({ length: 5 }, (_, i) => ({
-        name: `Fila ${i + 1}`,
-        value: Math.floor(Math.random() * 100),
-        showing: false, // Controla el estado del botón
-      })),
-      broadcastChannel: null, // Canal de comunicación
+      options: [...preguntas],  // Lista de preguntas
+      tableData: [],  // Inicializamos la tabla vacía
+      store: usePreguntasStore()
     };
   },
   mounted() {
-    // Crear el canal de comunicación con nombre 'appChannel'
-    this.broadcastChannel = new BroadcastChannel('appChannel');
-  },
-  beforeDestroy() {
-    // Cerrar el canal de comunicación cuando el componente se destruya
-    if (this.broadcastChannel) {
-      this.broadcastChannel.close();
-    }
+    console.log(preguntas)
   },
   methods: {
-    toggleShow(row) {
+    toggleShow(row, index) {
+      console.log("IMPRIMIENDO ROW");
+      console.log(row);
+      console.log("Índice de la fila:", index); // Imprimir índice
+
       // Cambiar el estado del botón
       row.showing = !row.showing;
 
       // Enviar un mensaje al canal de comunicación
       const action = row.showing ? "Mostrar" : "Ocultar";
-      this.broadcastChannel.postMessage({
-        action,
-        rowName: row.name,
-        value: row.value,
-      });
 
-      console.log(`${action} para la fila:`, row.name);
+      console.log(`${action} para la fila:`, row.respuesta);
     },
     goToNextOption() {
-      // Encuentra el índice de la opción seleccionada
-      const currentIndex = this.options.indexOf(this.selectedOption);
-      
-      // Mueve al siguiente índice, volviendo al inicio si es necesario
+      const currentIndex = this.options.findIndex(option => option.pregunta === this.selectedOption);
       const nextIndex = (currentIndex + 1) % this.options.length;
-      
-      // Actualiza la opción seleccionada
-      this.selectedOption = this.options[nextIndex];
-
+      this.selectedOption = this.options[nextIndex].pregunta;
       console.log(`Opción seleccionada: ${this.selectedOption}`);
     },
+    showQuestion() {
+      const selectedQuestion = this.options.find(option => option.pregunta === this.selectedOption);
+
+      if (selectedQuestion) {
+        this.tableData = selectedQuestion.respuestas.map((respuesta) => ({
+          respuesta: respuesta.respuesta,
+          popularidad: respuesta.popularidad,
+          showing: false,
+        }));
+        this.store.setPregunta(selectedQuestion);
+
+        // Enviar la pregunta al BroadcastChannel
+        if (!this.broadcastChannel) {
+          this.broadcastChannel = new BroadcastChannel('question_channel');
+        }
+
+        // Enviar la pregunta a través del canal
+        this.broadcastChannel.postMessage({
+          pregunta: selectedQuestion.pregunta,
+          respuestas: selectedQuestion.respuestas,
+        });
+
+        console.log("Pregunta enviada:", selectedQuestion.pregunta);
+        console.log("Respuestas:", selectedQuestion.respuestas);
+      }
+    },
+    showAnswer(indice) {
+      // Enviar el índice de la respuesta seleccionada al canal
+      this.broadcastChannel.postMessage({
+        action: "mostrar_respuesta",
+        index: indice+1, // Enviar el índice del botón presionado
+      });
+
+      console.log(`Mostrar respuesta en el índice: ${indice}`);
+    }
   },
+
 };
 </script>
 
-<style>
+<style scoped>
 /* Opcional: Estilo para ajustar el diseño */
 </style>

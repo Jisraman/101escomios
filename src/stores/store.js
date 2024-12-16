@@ -54,18 +54,14 @@ export const useEquiposStore = defineStore('equipos', {
 export const usePreguntasStore = defineStore('preguntas', {
   state: () => ({
     pregunta: '',
-    respuestas: [], // Array de respuestas [{ texto: 'Respuesta 1', puntuacion: 10 }, ...]
+    respuestas: [], // Array de respuestas [{ respuesta: 'Texto', popularidad: 90 }]
     seleccionada: null, // Índice de la respuesta seleccionada
   }),
   actions: {
     // Configura una nueva pregunta con respuestas
-    setPregunta(nuevaPregunta, nuevasRespuestas) {
-      this.pregunta = nuevaPregunta;
-      this.respuestas = nuevasRespuestas.map((respuesta, index) => ({
-        texto: respuesta.texto,
-        puntuacion: respuesta.puntuacion,
-        id: index,
-      }));
+    setPregunta(nuevaPregunta) {
+      this.pregunta = nuevaPregunta.pregunta;
+      this.respuestas = nuevaPregunta.respuestas;
     },
     // Selecciona una respuesta
     seleccionarRespuesta(indice) {
@@ -76,15 +72,6 @@ export const usePreguntasStore = defineStore('preguntas', {
       this.pregunta = '';
       this.respuestas = [];
       this.seleccionada = null;
-    },
-    // Acciones relacionadas con sonidos o animaciones
-    reproducirSonido(sonido) {
-      console.log(`Reproduciendo sonido: ${sonido}`);
-      // Aquí podrías integrar librerías como Howler.js para reproducir sonidos
-    },
-    mostrarAnimacion(animacion) {
-      console.log(`Mostrando animación: ${animacion}`);
-      // Aquí puedes disparar alguna animación en tu componente Vue
     },
   },
 });

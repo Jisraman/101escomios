@@ -27,8 +27,8 @@
           class="answer" 
           :class="{ revealed: respuesta.mostrar }"
         >
-          <span>{{ respuesta.texto }}</span> <!-- Respuesta a la izquierda -->
-          <span v-if="respuesta.mostrar">({{ respuesta.puntos }})</span> <!-- Puntaje a la derecha -->
+          <span>{{ respuesta.respuesta }}</span> <!-- Respuesta a la izquierda -->
+          <span v-if="respuesta.mostrar">({{ respuesta.popularidad }})</span> <!-- Puntaje a la derecha -->
         </div>
       </div>
 
@@ -47,6 +47,7 @@
 </template>
 
 <script>
+
 export default {
   name: "TriviaBoard",
   data() {
@@ -54,16 +55,9 @@ export default {
       // Equipos y sus puntos
       equipoA: { nombre: "Equipo A", puntuacion: 0 },
       equipoB: { nombre: "Equipo B", puntuacion: 0 },
-      // Pregunta actual
-      pregunta: "¿Cuál es la capital de Francia?",
-      // Respuestas y si están reveladas
-      respuestas: [
-        { texto: "París", puntos: 50, mostrar: false },
-        { texto: "Marsella", puntos: 30, mostrar: false },
-        { texto: "Lyon", puntos: 20, mostrar: false },
-        { texto: "Toulouse", puntos: 10, mostrar: false },
-        { texto: "Niza", puntos: 5, mostrar: false },
-      ],
+      // Store
+      pregunta: '',
+      respuestas: [],
       // Animación de puntos brillantes
       sparkles: [],
       rows: 15,
@@ -73,16 +67,35 @@ export default {
   mounted() {
     this.createGrid();
     this.startRandomAnimations();
-    // Probar revelación de respuestas con un retraso
-  setTimeout(() => {
-    this.revelarRespuesta(0); // Revelar la primera respuesta (índice 0)
-    setTimeout(() => {
-      this.revelarRespuesta(2); // Revelar la tercera respuesta (índice 2) después
-    }, 1000); // Segundo retraso para la siguiente respuesta
-  }, 1000);
+
+    // Crear el canal de comunicación
+    this.broadcastChannel = new BroadcastChannel('question_channel');
+
+    // Escuchar los mensajes enviados por el primer componente
+    this.broadcastChannel.onmessage = (event) => {
+      
+
+      if(event.data.pregunta){
+        this.pregunta = event.data.pregunta;
+      }
+
+      if(event.data.respuestas){
+        this.respuestas = event.data.respuestas;
+      }
+
+      if(event.data.index){
+        console.log("INDICE RECIBIDO " + event.data.index)
+        console.log(this.respuestas)
+        this.revelarRespuesta(event.data.index -1)
+        
+      }
+      
+      //console.log("Pregunta recibida:", pregunta);
+      //console.log("Respuestas recibidas:", respuestas);
+    };
   },
   methods: {
-    // Revelar una respuesta específica
+    // Método para manejar la revelación de respuestas
     revelarRespuesta(indiceRespuesta) {
       if (this.respuestas[indiceRespuesta]) {
         this.$set(this.respuestas, indiceRespuesta, {
@@ -91,8 +104,7 @@ export default {
         });
       }
     },
-
-    // Cambiar la pregunta
+    // Método para mostrar la pregunta
     mostrarPregunta(nuevaPregunta, nuevasRespuestas) {
       this.pregunta = nuevaPregunta;
       this.respuestas = nuevasRespuestas.map((respuesta) => ({
@@ -193,7 +205,6 @@ export default {
   opacity: 1; /* Visibilidad completa */
 }
 
-
 /* Sección de puntuaciones */
 .scores {
   display: flex;
@@ -266,8 +277,6 @@ export default {
   margin-left: 20px;
   white-space: nowrap; /* Evitar que el puntaje se rompa en líneas */
 }
-
-
 
 /* Puntos brillantes */
 .grid-container {
