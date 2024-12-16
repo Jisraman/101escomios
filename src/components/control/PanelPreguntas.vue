@@ -16,7 +16,9 @@
       </el-select>
       <el-button type="primary" @click="goToNextOption">Siguiente</el-button>
 
-      <el-button type="primary" @click="showQuestion">Mostrar</el-button>
+      <el-button type="primary" @click="showQuestion" >
+        Mostrar
+      </el-button>
     </div>
 
     <!-- Tabla -->
@@ -28,21 +30,24 @@
         <template #default="scope">
           <el-button
             :type="scope.row.showing ? 'info' : 'primary'"
-            @click="toggleShow(scope.row); showAnswer(scope.$index)" 
+            @click="toggleShow(scope.row); showAnswer(scope.$index)"
+            :disabled="scope.row.showing"
           >
             {{ scope.row.showing ? 'Ocultar en tablero' : 'Mostrar en tablero' }}
           </el-button>
           <el-button
             type="danger"
             @click="sumarEquipoA(scope.$index)" 
+            :disabled="!scope.row.showing || scope.row.equipoB_pulsado || scope.row.equipoA_pulsado"
           >
-            {{ "equipoA" }}
+            Equipo A
           </el-button>
           <el-button
             type="success"
             @click="sumarEquipoB(scope.$index)" 
+            :disabled="!scope.row.showing || scope.row.equipoA_pulsado || scope.row.equipoB_pulsado"
           >
-            {{ "equipoB" }}
+            Equipo B
           </el-button>
         </template>
       </el-table-column>
@@ -63,7 +68,8 @@ export default {
       options: [...preguntas],  // Lista de preguntas
       tableData: [],  // Inicializamos la tabla vacía
       storePreguntas: usePreguntasStore(),
-      storeEquipos: useEquiposStore()
+      storeEquipos: useEquiposStore(),
+      showQuestionClicked: false,  // Para saber si se mostró la pregunta
     };
   },
   mounted() {
@@ -71,13 +77,11 @@ export default {
   },
   methods: {
     toggleShow(row) {
-
       // Cambiar el estado del botón
       row.showing = !row.showing;
 
       // Enviar un mensaje al canal de comunicación
       const action = row.showing ? "Mostrar" : "Mostrada";
-
       console.log(`${action} para la fila:`, row.respuesta);
     },
     goToNextOption() {
@@ -94,8 +98,11 @@ export default {
           respuesta: respuesta.respuesta,
           popularidad: respuesta.popularidad,
           showing: false,
+          equipoA_pulsado: false, // Estado de si se pulsó equipoA
+          equipoB_pulsado: false, // Estado de si se pulsó equipoB
         }));
         this.storePreguntas.setPregunta(selectedQuestion);
+        this.showQuestionClicked = true;  // Se activó el clic en Mostrar
 
         // Enviar la pregunta al BroadcastChannel
         if (!this.broadcastChannel) {
@@ -116,42 +123,50 @@ export default {
       // Enviar el índice de la respuesta seleccionada al canal
       this.broadcastChannel.postMessage({
         action: "mostrar_respuesta",
-        index: indice+1, // Enviar el índice del botón presionado
+        index: indice + 1, // Enviar el índice del botón presionado
       });
 
       console.log(`Mostrar respuesta en el índice: ${indice}`);
     },
-    sumarEquipoA(index){
-      console.log("SUMANDO PUNTOS A")
-      console.log(this.storePreguntas.respuestas[index].popularidad)
-      console.log(this.storeEquipos.equipoA.puntuacion)
+    sumarEquipoA(index) {
+      if (this.tableData[index].equipoB_pulsado) return; // Si ya se pulsó equipo B, no permitir pulsar equipo A
 
+      console.log("SUMANDO PUNTOS A");
+      console.log(this.storePreguntas.respuestas[index].popularidad);
+      console.log(this.storeEquipos.equipoA.puntuacion);
 
-      this.storeEquipos.actualizarPuntuacion('A', this.storePreguntas.respuestas[index].popularidad)
+      this.storeEquipos.actualizarPuntuacion('A', this.storePreguntas.respuestas[index].popularidad);
       this.broadcastChannel.postMessage({
         action: "actualizarPuntuacion",
         equipoA: {
           nombre: this.storeEquipos.equipoA.nombre,
-          puntuacion: this.storeEquipos.equipoA.puntuacion, // Enviar el índice del botón presionado
+          puntuacion: this.storeEquipos.equipoA.puntuacion,
         }
       });
-    },
-    sumarEquipoB(index){
-      console.log("SUMANDO PUNTOS B")
-      console.log(this.storePreguntas.respuestas[index].popularidad)
-      console.log(this.storeEquipos.equipoB.puntuacion)
 
-      this.storeEquipos.actualizarPuntuacion('B', this.storePreguntas.respuestas[index].popularidad)
+      // Marcar que se pulsó el botón de equipoA
+      this.tableData[index].equipoA_pulsado = true;
+    },
+    sumarEquipoB(index) {
+      if (this.tableData[index].equipoA_pulsado) return; // Si ya se pulsó equipo A, no permitir pulsar equipo B
+
+      console.log("SUMANDO PUNTOS B");
+      console.log(this.storePreguntas.respuestas[index].popularidad);
+      console.log(this.storeEquipos.equipoB.puntuacion);
+
+      this.storeEquipos.actualizarPuntuacion('B', this.storePreguntas.respuestas[index].popularidad);
       this.broadcastChannel.postMessage({
         action: "actualizarPuntuacion",
         equipoB: {
           nombre: this.storeEquipos.equipoB.nombre,
-          puntuacion: this.storeEquipos.equipoB.puntuacion, // Enviar el índice del botón presionado
-        } // Enviar el índice del botón presionado
+          puntuacion: this.storeEquipos.equipoB.puntuacion,
+        }
       });
-    }
-  },
 
+      // Marcar que se pulsó el botón de equipoB
+      this.tableData[index].equipoB_pulsado = true;
+    }
+  }
 };
 </script>
 

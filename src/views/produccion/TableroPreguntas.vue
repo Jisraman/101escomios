@@ -5,11 +5,11 @@
       <!-- Puntuaciones de los equipos -->
       <div class="scores">
         <div class="team">
-          <h2>{{ equipoA.nombre }}</h2>
+          <p>{{ equipoA.nombre }}</p>
           <p>{{ equipoA.puntuacion }}</p>
         </div>
         <div class="team">
-          <h2>{{ equipoB.nombre }}</h2>
+          <p>{{ equipoB.nombre }}</p>
           <p>{{ equipoB.puntuacion }}</p>
         </div>
       </div>
@@ -74,6 +74,13 @@ export default {
     // Escuchar los mensajes enviados por el primer componente
     this.broadcastChannel.onmessage = (event) => {
       
+      if(event.data.equiposNombres){
+        this.equipoA.nombre =event.data.equiposNombres.equipoA
+        this.equipoB.nombre =event.data.equiposNombres.equipoB
+        console.log("NOMBRES EQUIPO LLEGARON")
+        console.log(event.data.equiposNombres)
+      }
+
       if(event.data.equipoA){
         this.equipoA.nombre = event.data.equipoA.nombre
         this.equipoA.puntuacion = event.data.equipoA.puntuacion

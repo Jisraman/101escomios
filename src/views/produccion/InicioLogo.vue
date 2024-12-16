@@ -87,7 +87,8 @@ export default {
   height: 100vh;
   margin: 0px;
   overflow: hidden;
-  background: linear-gradient(120deg, #ff0080, #8000ff);
+  /*background: linear-gradient(120deg, #ff0080, #8000ff);*/
+  background: linear-gradient(120deg, #ff0080, #0000FF);
   background-size: 200% 200%;
   animation: gradientAnimation 4s ease infinite;
   display: flex;

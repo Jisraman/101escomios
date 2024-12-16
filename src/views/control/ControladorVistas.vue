@@ -2,6 +2,7 @@
   <div class="app-container">
     <el-main class="main-container">
       <PanelVistas />
+      <PanelEquipos/>
       <PanelPreguntas />
       <PanelEfectos />
     </el-main>
@@ -11,6 +12,7 @@
 <script>
 import PanelPreguntas from "@/components/control/PanelPreguntas.vue";
 import PanelVistas from "@/components/control/PanelVistas.vue";
+import PanelEquipos from "@/components/control/PanelEquipos.vue";
 import PanelEfectos from "@/components/control/PanelEfectos.vue";
 
 export default {
@@ -18,6 +20,7 @@ export default {
     PanelPreguntas,
     PanelVistas,
     PanelEfectos,
+    PanelEquipos
   },
 };
 </script>
