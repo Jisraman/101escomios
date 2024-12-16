@@ -28,21 +28,21 @@
         <template #default="scope">
           <el-button
             :type="scope.row.showing ? 'info' : 'primary'"
-            @click="toggleShow(scope.row, scope.$index);showAnswer(scope.$index)" 
+            @click="toggleShow(scope.row); showAnswer(scope.$index)" 
           >
             {{ scope.row.showing ? 'Ocultar en tablero' : 'Mostrar en tablero' }}
           </el-button>
           <el-button
             type="danger"
-            @click="showAnswer(scope.$index)" 
+            @click="sumarEquipoA(scope.$index)" 
           >
-            {{ "equipo1" }}
+            {{ "equipoA" }}
           </el-button>
           <el-button
             type="success"
-            @click="showAnswer(scope.$index)" 
+            @click="sumarEquipoB(scope.$index)" 
           >
-            {{ "equipo2" }}
+            {{ "equipoB" }}
           </el-button>
         </template>
       </el-table-column>
@@ -53,6 +53,7 @@
 <script>
 import { preguntas } from '../../stores/preguntas'
 import { usePreguntasStore } from '../../stores/store'
+import { useEquiposStore } from '../../stores/store'
 
 export default {
   name: "TablaPuntos",
@@ -61,23 +62,21 @@ export default {
       selectedOption: null, // Opción seleccionada
       options: [...preguntas],  // Lista de preguntas
       tableData: [],  // Inicializamos la tabla vacía
-      store: usePreguntasStore()
+      storePreguntas: usePreguntasStore(),
+      storeEquipos: useEquiposStore()
     };
   },
   mounted() {
     console.log(preguntas)
   },
   methods: {
-    toggleShow(row, index) {
-      console.log("IMPRIMIENDO ROW");
-      console.log(row);
-      console.log("Índice de la fila:", index); // Imprimir índice
+    toggleShow(row) {
 
       // Cambiar el estado del botón
       row.showing = !row.showing;
 
       // Enviar un mensaje al canal de comunicación
-      const action = row.showing ? "Mostrar" : "Ocultar";
+      const action = row.showing ? "Mostrar" : "Mostrada";
 
       console.log(`${action} para la fila:`, row.respuesta);
     },
@@ -96,7 +95,7 @@ export default {
           popularidad: respuesta.popularidad,
           showing: false,
         }));
-        this.store.setPregunta(selectedQuestion);
+        this.storePreguntas.setPregunta(selectedQuestion);
 
         // Enviar la pregunta al BroadcastChannel
         if (!this.broadcastChannel) {
@@ -121,6 +120,35 @@ export default {
       });
 
       console.log(`Mostrar respuesta en el índice: ${indice}`);
+    },
+    sumarEquipoA(index){
+      console.log("SUMANDO PUNTOS A")
+      console.log(this.storePreguntas.respuestas[index].popularidad)
+      console.log(this.storeEquipos.equipoA.puntuacion)
+
+
+      this.storeEquipos.actualizarPuntuacion('A', this.storePreguntas.respuestas[index].popularidad)
+      this.broadcastChannel.postMessage({
+        action: "actualizarPuntuacion",
+        equipoA: {
+          nombre: this.storeEquipos.equipoA.nombre,
+          puntuacion: this.storeEquipos.equipoA.puntuacion, // Enviar el índice del botón presionado
+        }
+      });
+    },
+    sumarEquipoB(index){
+      console.log("SUMANDO PUNTOS B")
+      console.log(this.storePreguntas.respuestas[index].popularidad)
+      console.log(this.storeEquipos.equipoB.puntuacion)
+
+      this.storeEquipos.actualizarPuntuacion('B', this.storePreguntas.respuestas[index].popularidad)
+      this.broadcastChannel.postMessage({
+        action: "actualizarPuntuacion",
+        equipoB: {
+          nombre: this.storeEquipos.equipoB.nombre,
+          puntuacion: this.storeEquipos.equipoB.puntuacion, // Enviar el índice del botón presionado
+        } // Enviar el índice del botón presionado
+      });
     }
   },
 

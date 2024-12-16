@@ -17,11 +17,11 @@ export const useVistasStore = defineStore('vistas', {
 export const useEquiposStore = defineStore('equipos', {
   state: () => ({
     equipoA: {
-      nombre: 'Equipo A',
+      nombre: 'Equipo Azul',
       puntuacion: 0,
     },
     equipoB: {
-      nombre: 'Equipo B',
+      nombre: 'Equipo Blue',
       puntuacion: 0,
     },
   }),

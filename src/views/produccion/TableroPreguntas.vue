@@ -74,6 +74,17 @@ export default {
     // Escuchar los mensajes enviados por el primer componente
     this.broadcastChannel.onmessage = (event) => {
       
+      if(event.data.equipoA){
+        this.equipoA.nombre = event.data.equipoA.nombre
+        this.equipoA.puntuacion = event.data.equipoA.puntuacion
+        console.log("PUNTUACION A "+ event.data.equipoA.puntuacion + " " + this.equipoA.puntuacion)
+      }
+
+      if(event.data.equipoB){
+        this.equipoB.nombre = event.data.equipoB.nombre
+        this.equipoB.puntuacion = event.data.equipoB.puntuacion
+
+      }
 
       if(event.data.pregunta){
         this.pregunta = event.data.pregunta;
@@ -84,8 +95,8 @@ export default {
       }
 
       if(event.data.index){
-        console.log("INDICE RECIBIDO " + event.data.index)
-        console.log(this.respuestas)
+        //console.log("INDICE RECIBIDO " + event.data.index)
+        //console.log(this.respuestas)
         this.revelarRespuesta(event.data.index -1)
         
       }
