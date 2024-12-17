@@ -73,7 +73,7 @@ export default {
           sparkle.style.opacity = 0.6;
           sparkle.style.transform = "scale(1)";
         }, 500);
-      }, 100); // Animar cada 100ms
+      }, 50); // Animar cada 100ms
     },
   },
 };

@@ -24,6 +24,7 @@ export const useEquiposStore = defineStore('equipos', {
       nombre: 'Equipo Blue',
       puntuacion: 0,
     },
+    acumulado : 0
   }),
   actions: {
     // Actualiza el nombre de un equipo
@@ -46,6 +47,9 @@ export const useEquiposStore = defineStore('equipos', {
     reiniciarPuntuaciones() {
       this.equipoA.puntuacion = 0;
       this.equipoB.puntuacion = 0;
+      this.acumulado = 0;
+      this.equipoA.nombre = "";
+      this.equipoB.nombre = "";
     },
   },
 });

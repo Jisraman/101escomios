@@ -21,8 +21,7 @@
 
       <!-- Pregunta actual -->
       <div class="question">
-        <h1 v-if="pregunta">{{ pregunta }}</h1>
-        <h1 v-else>Esperando pregunta...</h1>
+        <h1 >{{ acumulado }}</h1>
       </div>
 
       <!-- Respuestas -->
@@ -30,18 +29,33 @@
         <div v-if="respuestas.length === 0" class="placeholder">
           <p>No hay respuestas disponibles aún</p>
         </div>
+        <div v-if="error > 0" class="error-images">
+          <img 
+            v-for="n in error" 
+            :key="n" 
+            src="../../assets/x.png" 
+            alt="Error"
+            class="error-image"
+            :class="{'fade-in': showError, 'fade-out': !showError}"
+          />
+        </div>
+        <!-- Temporizador -->
+        <div v-if="tiempoRestante > 0" class="temporizador">
+          <p>{{ tiempoRestante }} segundos</p>
+        </div>
         <div 
           v-for="(respuesta, index) in respuestas" 
           :key="index" 
           class="answer" 
           :class="{ revealed: respuesta.mostrar }"
         >
-          <span>{{ respuesta.respuesta }}</span>
+          <span>{{ index + 1 }} - {{ respuesta.respuesta }}</span>
           <span v-if="respuesta.mostrar">({{ respuesta.popularidad }})</span>
         </div>
+
       </div>
     </div>
-
+    
     <!-- Efectos de puntos brillantes -->
     <div class="grid-container">
       <div
@@ -66,6 +80,11 @@ export default {
       sparkles: [],
       rows: 15,
       cols: 15,
+      error: null,
+      showError: false,
+      tiempoRestante: 0,  // Temporizador
+      intervaloTemporizador: null,
+      acumulado:0
     };
   },
   mounted() {
@@ -77,6 +96,17 @@ export default {
 
     // Escuchar los mensajes enviados por el primer componente
     this.broadcastChannel.onmessage = (event) => {
+      
+      if (event.data.acumulado) {
+        this.acumulado = event.data.acumulado;
+      }
+
+      if (event.data.acumulado==='cero') {
+        this.acumulado = 0;
+      }
+
+
+
       if (event.data.action === "reset") {
         this.resetBoard();
       }
@@ -88,12 +118,10 @@ export default {
       }
 
       if (event.data.equipoA) {
-        this.equipoA.nombre = event.data.equipoA.nombre;
         this.equipoA.puntuacion = event.data.equipoA.puntuacion;
       }
 
       if (event.data.equipoB) {
-        this.equipoB.nombre = event.data.equipoB.nombre;
         this.equipoB.puntuacion = event.data.equipoB.puntuacion;
       }
 
@@ -108,6 +136,34 @@ export default {
       if (event.data.index) {
         this.revelarRespuesta(event.data.index - 1);
       }
+
+      // Manejo del error
+      if (event.data.error ) {
+        this.error = event.data.error;  // Asignar la cantidad de imágenes de error
+        this.showError = true;
+        
+        // Controlar la animación de fade-out después de 2.5 segundos
+        setTimeout(() => {
+          this.showError = false;
+        }, 2500); // Tiempo en milisegundos (2.5 segundos en este caso)
+      }
+
+      if (event.data.temporizador) {
+        // Actualiza el temporizador con el valor recibido
+        this.tiempoRestante = event.data.temporizador;
+
+        // Si el temporizador es mayor que cero, empieza a contar hacia abajo
+        if (this.tiempoRestante > 0) {
+          clearInterval(this.intervaloTemporizador);  // Limpiar cualquier intervalo anterior
+          this.intervaloTemporizador = setInterval(() => {
+            if (this.tiempoRestante > 0) {
+              this.tiempoRestante--;
+            } else {
+              clearInterval(this.intervaloTemporizador); // Detener cuando llegue a cero
+            }
+          }, 1000);
+        }
+      }
     };
   },
   methods: {
@@ -120,10 +176,12 @@ export default {
       }
     },
     resetBoard() {
+      this.acumulado  =0;
       this.equipoA.puntuacion = 0;
       this.equipoB.puntuacion = 0;
       this.pregunta = "Esperando pregunta...";
       this.respuestas = [];
+      this.tiempoRestante = 0; // Reiniciar el temporizador
     },
     createGrid() {
       const total = this.rows * this.cols;
@@ -163,7 +221,7 @@ export default {
           sparkle.style.opacity = 0.6;
           sparkle.style.transform = "scale(1)";
         }, 500);
-      }, 300);
+      }, 50);
     },
   },
 };
@@ -201,9 +259,7 @@ export default {
 /* Logo del juego con brillo */
 .logo-container {
   position: absolute;
-  top: 40px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 30px;
   z-index: 3;
   scale: 1.2;
 }
@@ -229,6 +285,7 @@ export default {
 .board {
   position: relative;
   width: 80%;
+  height: 400px;
   max-width: 700px;
   background: rgba(0, 0, 0, 0.8);
   border-radius: 20px;
@@ -255,15 +312,24 @@ export default {
   text-align: center;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   border: 3px solid gold;
+  width: 150px;          /* Tamaño fijo en ancho */
+  height: 80px;          /* Tamaño fijo en alto */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  white-space: nowrap;   /* Evita que el texto se divida en múltiples líneas */
+  overflow: hidden;      /* Evita que el texto se desborde del recuadro */
+  text-overflow: ellipsis; /* Agrega puntos suspensivos si el texto es demasiado largo */
 }
 
 .team.left {
-  left: -150px;
+  left: -250px;
 }
 
 .team.right {
-  right: -150px;
+  right: -250px;
 }
+
 
 .question h1 {
   font-size: 2rem;
@@ -319,4 +385,52 @@ export default {
   pointer-events: none;
   position: absolute;
 }
+
+.error-images {
+  position: absolute; /* Añadido para posicionarlo sobre el tablero */
+  top: 200; /* Asegura que las imágenes se sitúen en la parte superior */
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  width: 100%; /* O el tamaño que desees */
+  height: 100px; /* Establece una altura específica si es necesario */
+  z-index: 10; /* Asegura que esté por encima de otros elementos */
+}
+
+.error-image {
+  width: 200px; /* Tamaño de la imagen */
+  height: 200px; /* Tamaño de la imagen */
+  object-fit: contain; /* Asegura que la imagen se ajuste dentro del contenedor sin distorsionarse */
+}
+
+/* Animaciones para fade-in y fade-out */
+.fade-in {
+  opacity: 1 !important;
+}
+
+.fade-out {
+  opacity: 0 !important;
+}
+
+/* Temporizador */
+/* Temporizador */
+.temporizador {
+  font-size: 1.5rem;
+  color: white;
+  text-align: center;
+  background-color: white;
+  color: black;
+  border-radius: 5px;
+  padding: 10px;
+  border: 2px solid black;
+  display: inline-block;
+  position: absolute; /* Cambiado de fixed a absolute */
+  top: 50%;  /* Centrado vertical */
+  left: 50%; /* Centrado horizontal */
+  transform: translate(-50%, -50%); /* Ajuste para garantizar el centro exacto */
+  z-index: 10; /* Asegura que esté por encima de otros elementos */
+}
+
 </style>

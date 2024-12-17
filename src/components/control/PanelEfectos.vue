@@ -9,25 +9,11 @@
         Sonido de Inicio
       </button>
       <button
-        @click="playSound('reloj')"
+        @click="playSound('reloj');"
         :disabled="isPlaying"
         class="btn"
       >
-        Sonido de Reloj
-      </button>
-      <button
-        @click="playSound('punto')"
-        :disabled="isPlaying"
-        class="btn"
-      >
-        Punto Obtenido
-      </button>
-      <button
-        @click="playSound('ganador')"
-        :disabled="isPlaying"
-        class="btn"
-      >
-        Sonido de Ganador
+        Reloj
       </button>
   
       <!-- Botones de Taches -->
@@ -52,6 +38,14 @@
       >
         ❌❌❌
       </button>
+
+      <button
+        @click="playSound('duplicada')"
+        :disabled="isPlaying"
+        class="btn"
+      >
+        Sonido duplicado
+      </button>
     </div>
   </template>
   
@@ -66,6 +60,7 @@
           punto: require("../../assets/sounds/sonido_correcto.mp3"),
           ganador: require("../../assets/sounds/sonido_ganador.mp3"),
           tache: require("../../assets/sounds/sonido_incorrecto.mp3"),
+          duplicada: require("../../assets/sounds/sonido_ambiguo.mp3"),
         },
         questionChannel: null, // Canal de comunicación principal
         soundChannel: null, // Canal de sonido que escucha mensajes activamente

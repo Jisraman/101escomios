@@ -4,16 +4,12 @@
     <div style="display: flex; align-items: center; gap: 10px;">
       <el-input 
         v-model="equipoA.nombre" 
-        placeholder="Nombre del Equipo A"
+        placeholder="Nombre del Equipo 1"
         style="width: 300px;"
       ></el-input>
-    </div>
-
-    <!-- Entrada para Equipo B -->
-    <div style="display: flex; align-items: center; gap: 10px;">
       <el-input 
         v-model="equipoB.nombre" 
-        placeholder="Nombre del Equipo B"
+        placeholder="Nombre del Equipo 2"
         style="width: 300px;"
       ></el-input>
     </div>
@@ -21,10 +17,10 @@
     <!-- Botones -->
     <div style="display: flex; gap: 20px;">
       <el-button type="primary" @click="guardarNombres">
-        Mostrar
+        Mostrar Equipos
       </el-button>
       <el-button type="danger" @click="resetStores">
-        Resetear
+        Reset Juego
       </el-button>
     </div>
   </div>
