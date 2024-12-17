@@ -16,7 +16,7 @@
       </el-select>
       <el-button type="primary" @click="goToNextOption">Siguiente</el-button>
 
-      <el-button type="primary" @click="showQuestion" >
+      <el-button type="primary" @click="showQuestion">
         Mostrar
       </el-button>
     </div>
@@ -70,17 +70,23 @@ export default {
       storePreguntas: usePreguntasStore(),
       storeEquipos: useEquiposStore(),
       showQuestionClicked: false,  // Para saber si se mostró la pregunta
+      broadcastChannel: null, // Canal para la pregunta
+      soundChannel: null, // Canal para el sonido
     };
   },
   mounted() {
+    // Inicializar canales si no existen
+    if (!this.broadcastChannel) {
+      this.broadcastChannel = new BroadcastChannel('question_channel');
+    }
+    if (!this.soundChannel) {
+      this.soundChannel = new BroadcastChannel('sound_channel');
+    }
     console.log(preguntas)
   },
   methods: {
     toggleShow(row) {
-      // Cambiar el estado del botón
       row.showing = !row.showing;
-
-      // Enviar un mensaje al canal de comunicación
       const action = row.showing ? "Mostrar" : "Mostrada";
       console.log(`${action} para la fila:`, row.respuesta);
     },
@@ -98,18 +104,16 @@ export default {
           respuesta: respuesta.respuesta,
           popularidad: respuesta.popularidad,
           showing: false,
-          equipoA_pulsado: false, // Estado de si se pulsó equipoA
-          equipoB_pulsado: false, // Estado de si se pulsó equipoB
+          equipoA_pulsado: false, 
+          equipoB_pulsado: false,
         }));
+
         this.storePreguntas.setPregunta(selectedQuestion);
-        this.showQuestionClicked = true;  // Se activó el clic en Mostrar
+        this.showQuestionClicked = true;
 
-        // Enviar la pregunta al BroadcastChannel
-        if (!this.broadcastChannel) {
-          this.broadcastChannel = new BroadcastChannel('question_channel');
-        }
+        
 
-        // Enviar la pregunta a través del canal
+        // Enviar pregunta al canal principal
         this.broadcastChannel.postMessage({
           pregunta: selectedQuestion.pregunta,
           respuestas: selectedQuestion.respuestas,
@@ -117,23 +121,21 @@ export default {
 
         console.log("Pregunta enviada:", selectedQuestion.pregunta);
         console.log("Respuestas:", selectedQuestion.respuestas);
+
+        
       }
     },
     showAnswer(indice) {
-      // Enviar el índice de la respuesta seleccionada al canal
       this.broadcastChannel.postMessage({
         action: "mostrar_respuesta",
-        index: indice + 1, // Enviar el índice del botón presionado
+        index: indice + 1,
       });
-
+      // Enviar mensaje al canal de sonido para reproducir "sonido_correcto"
+      this.soundChannel.postMessage({ sound: "punto" });
       console.log(`Mostrar respuesta en el índice: ${indice}`);
     },
     sumarEquipoA(index) {
-      if (this.tableData[index].equipoB_pulsado) return; // Si ya se pulsó equipo B, no permitir pulsar equipo A
-
-      console.log("SUMANDO PUNTOS A");
-      console.log(this.storePreguntas.respuestas[index].popularidad);
-      console.log(this.storeEquipos.equipoA.puntuacion);
+      if (this.tableData[index].equipoB_pulsado) return;
 
       this.storeEquipos.actualizarPuntuacion('A', this.storePreguntas.respuestas[index].popularidad);
       this.broadcastChannel.postMessage({
@@ -143,16 +145,10 @@ export default {
           puntuacion: this.storeEquipos.equipoA.puntuacion,
         }
       });
-
-      // Marcar que se pulsó el botón de equipoA
       this.tableData[index].equipoA_pulsado = true;
     },
     sumarEquipoB(index) {
-      if (this.tableData[index].equipoA_pulsado) return; // Si ya se pulsó equipo A, no permitir pulsar equipo B
-
-      console.log("SUMANDO PUNTOS B");
-      console.log(this.storePreguntas.respuestas[index].popularidad);
-      console.log(this.storeEquipos.equipoB.puntuacion);
+      if (this.tableData[index].equipoA_pulsado) return;
 
       this.storeEquipos.actualizarPuntuacion('B', this.storePreguntas.respuestas[index].popularidad);
       this.broadcastChannel.postMessage({
@@ -162,8 +158,6 @@ export default {
           puntuacion: this.storeEquipos.equipoB.puntuacion,
         }
       });
-
-      // Marcar que se pulsó el botón de equipoB
       this.tableData[index].equipoB_pulsado = true;
     }
   }

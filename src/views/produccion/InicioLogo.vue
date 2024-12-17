@@ -194,12 +194,14 @@ export default {
 /* Contenedor de puntos */
 .grid-container {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  pointer-events: none; /* Evita interferencia con clics */
-  overflow: hidden;
-  z-index: 0;
-  padding-left: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 75px;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
 }
 
 /* Puntos animados */

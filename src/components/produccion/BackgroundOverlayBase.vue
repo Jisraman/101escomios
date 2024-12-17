@@ -156,7 +156,7 @@ export default {
   height: 100%;
   align-items: center;
   align-content: center;
-  padding-left: 50px;
+  margin-left: 80px;
   pointer-events: none; /* Los puntos no interfieren con los clics */
   overflow-y: hidden !important;
 

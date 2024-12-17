@@ -49,9 +49,8 @@ export default {
   },
   mounted() {
     // Crear un canal de comunicación si no existe
-    if (!this.broadcastChannel) {
-      this.broadcastChannel = new BroadcastChannel("global_channel");
-    }
+    this.broadcastChannel = new BroadcastChannel("question_channel");
+
   },
   methods: {
     guardarNombres() {

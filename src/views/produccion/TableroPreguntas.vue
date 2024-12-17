@@ -1,14 +1,19 @@
 <template>
   <div class="background">
+    <!-- Logo del juego -->
+    <div class="logo-container">
+      <img src="@/assets/logoprograma2.png" alt="Logo del Juego" class="game-logo" />
+    </div>
+
     <!-- Contenedor principal del tablero -->
     <div class="board">
       <!-- Puntuaciones de los equipos -->
       <div class="scores">
-        <div class="team">
+        <div class="team left">
           <p>{{ equipoA.nombre }}</p>
           <p>{{ equipoA.puntuacion }}</p>
         </div>
-        <div class="team">
+        <div class="team right">
           <p>{{ equipoB.nombre }}</p>
           <p>{{ equipoB.puntuacion }}</p>
         </div>
@@ -16,22 +21,25 @@
 
       <!-- Pregunta actual -->
       <div class="question">
-        <h1>{{ pregunta }}</h1>
+        <h1 v-if="pregunta">{{ pregunta }}</h1>
+        <h1 v-else>Esperando pregunta...</h1>
       </div>
 
       <!-- Respuestas -->
       <div class="answers">
+        <div v-if="respuestas.length === 0" class="placeholder">
+          <p>No hay respuestas disponibles aún</p>
+        </div>
         <div 
           v-for="(respuesta, index) in respuestas" 
           :key="index" 
           class="answer" 
           :class="{ revealed: respuesta.mostrar }"
         >
-          <span>{{ respuesta.respuesta }}</span> <!-- Respuesta a la izquierda -->
-          <span v-if="respuesta.mostrar">({{ respuesta.popularidad }})</span> <!-- Puntaje a la derecha -->
+          <span>{{ respuesta.respuesta }}</span>
+          <span v-if="respuesta.mostrar">({{ respuesta.popularidad }})</span>
         </div>
       </div>
-
     </div>
 
     <!-- Efectos de puntos brillantes -->
@@ -47,18 +55,14 @@
 </template>
 
 <script>
-
 export default {
   name: "TriviaBoard",
   data() {
     return {
-      // Equipos y sus puntos
       equipoA: { nombre: "Equipo A", puntuacion: 0 },
       equipoB: { nombre: "Equipo B", puntuacion: 0 },
-      // Store
-      pregunta: '',
+      pregunta: "Esperando pregunta...",
       respuestas: [],
-      // Animación de puntos brillantes
       sparkles: [],
       rows: 15,
       cols: 15,
@@ -69,51 +73,44 @@ export default {
     this.startRandomAnimations();
 
     // Crear el canal de comunicación
-    this.broadcastChannel = new BroadcastChannel('question_channel');
+    this.broadcastChannel = new BroadcastChannel("question_channel");
 
     // Escuchar los mensajes enviados por el primer componente
     this.broadcastChannel.onmessage = (event) => {
-      
-      if(event.data.equiposNombres){
-        this.equipoA.nombre =event.data.equiposNombres.equipoA
-        this.equipoB.nombre =event.data.equiposNombres.equipoB
-        console.log("NOMBRES EQUIPO LLEGARON")
-        console.log(event.data.equiposNombres)
+      if (event.data.action === "reset") {
+        this.resetBoard();
       }
 
-      if(event.data.equipoA){
-        this.equipoA.nombre = event.data.equipoA.nombre
-        this.equipoA.puntuacion = event.data.equipoA.puntuacion
-        console.log("PUNTUACION A "+ event.data.equipoA.puntuacion + " " + this.equipoA.puntuacion)
+      if (event.data.equiposNombres) {
+        this.equipoA.nombre = event.data.equiposNombres.equipoA;
+        this.equipoB.nombre = event.data.equiposNombres.equipoB;
+        console.log("Nombres de equipos actualizados");
       }
 
-      if(event.data.equipoB){
-        this.equipoB.nombre = event.data.equipoB.nombre
-        this.equipoB.puntuacion = event.data.equipoB.puntuacion
-
+      if (event.data.equipoA) {
+        this.equipoA.nombre = event.data.equipoA.nombre;
+        this.equipoA.puntuacion = event.data.equipoA.puntuacion;
       }
 
-      if(event.data.pregunta){
+      if (event.data.equipoB) {
+        this.equipoB.nombre = event.data.equipoB.nombre;
+        this.equipoB.puntuacion = event.data.equipoB.puntuacion;
+      }
+
+      if (event.data.pregunta) {
         this.pregunta = event.data.pregunta;
       }
 
-      if(event.data.respuestas){
+      if (event.data.respuestas) {
         this.respuestas = event.data.respuestas;
       }
 
-      if(event.data.index){
-        //console.log("INDICE RECIBIDO " + event.data.index)
-        //console.log(this.respuestas)
-        this.revelarRespuesta(event.data.index -1)
-        
+      if (event.data.index) {
+        this.revelarRespuesta(event.data.index - 1);
       }
-      
-      //console.log("Pregunta recibida:", pregunta);
-      //console.log("Respuestas recibidas:", respuestas);
     };
   },
   methods: {
-    // Método para manejar la revelación de respuestas
     revelarRespuesta(indiceRespuesta) {
       if (this.respuestas[indiceRespuesta]) {
         this.$set(this.respuestas, indiceRespuesta, {
@@ -122,16 +119,12 @@ export default {
         });
       }
     },
-    // Método para mostrar la pregunta
-    mostrarPregunta(nuevaPregunta, nuevasRespuestas) {
-      this.pregunta = nuevaPregunta;
-      this.respuestas = nuevasRespuestas.map((respuesta) => ({
-        texto: respuesta.texto,
-        puntos: respuesta.puntos,
-        mostrar: false,
-      }));
+    resetBoard() {
+      this.equipoA.puntuacion = 0;
+      this.equipoB.puntuacion = 0;
+      this.pregunta = "Esperando pregunta...";
+      this.respuestas = [];
     },
-    // Crear puntos brillantes en el fondo
     createGrid() {
       const total = this.rows * this.cols;
       const cellWidth = 100 / this.cols;
@@ -150,15 +143,14 @@ export default {
             position: "absolute",
             top: `${row * cellHeight}%`,
             left: `${col * cellWidth}%`,
-            transition: "opacity 0.5s, transform 0.5s",
             opacity: 0.6,
+            transition: "opacity 0.5s, transform 0.5s",
           },
         };
 
         this.sparkles.push(sparkle);
       }
     },
-    // Animaciones aleatorias de los puntos brillantes
     startRandomAnimations() {
       setInterval(() => {
         const randomIndex = Math.floor(Math.random() * this.sparkles.length);
@@ -206,101 +198,119 @@ export default {
   }
 }
 
-/* Contenedor del tablero */
+/* Logo del juego con brillo */
+.logo-container {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  scale: 1.2;
+}
+
+.game-logo {
+  width: 150px;
+  height: auto;
+  border: 5px solid gold;
+  border-radius: 50%;
+  animation: glow 1.5s infinite alternate;
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.9), 0 0 60px rgba(255, 215, 0, 1);
+  }
+}
+
+/* Tablero */
 .board {
   position: relative;
-  width: 60%;
-  max-width: 800px;
+  width: 80%;
+  max-width: 700px;
   background: rgba(0, 0, 0, 0.8);
   border-radius: 20px;
   padding: 20px;
+  margin-top: 100px;
   color: white;
   font-family: "Arial", sans-serif;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
   z-index: 2;
   text-align: center;
-  border: 5px solid gold; /* Marco dorado */
-  opacity: 1; /* Visibilidad completa */
+  border: 5px solid gold;
 }
 
-/* Sección de puntuaciones */
-.scores {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.team h2 {
-  margin: 0;
-  font-size: 1.5rem;
-}
-
-.team p {
+/* Puntuaciones como tarjetas laterales */
+.team {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: white;
   font-size: 1.2rem;
-  margin: 0;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border: 3px solid gold;
 }
 
-/* Pregunta */
+.team.left {
+  left: -150px;
+}
+
+.team.right {
+  right: -150px;
+}
+
 .question h1 {
   font-size: 2rem;
   margin-bottom: 20px;
 }
 
-/* Respuestas */
 .answers {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-@keyframes revealAnimation {
-  from {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
 .answer {
   display: flex;
-  justify-content: space-between; /* Para alinear respuesta y puntaje */
-  align-items: center;
+  justify-content: space-between;
   font-size: 1.5rem;
   padding: 10px;
   background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 10px;
-  opacity: 0; /* Totalmente invisible al inicio */
-  transform: translateX(-100%); /* Fuera del área visible */
-  overflow: hidden; /* Evitar que contenido sobresalga */
-  transition: transform 0.5s ease, opacity 0.5s ease;
+  transition: transform 0.5s, opacity 0.5s;
+  opacity: 0;
+  transform: translateX(-100%);
 }
 
 .answer.revealed {
-  opacity: 1; /* Mostrar respuesta */
-  transform: translateX(0); /* Mover a su posición */
-  background: rgba(255, 255, 255, 0.3); /* Fondo más visible */
+  opacity: 1;
+  transform: translateX(0);
+  background: rgba(255, 255, 255, 0.3);
 }
 
-.answer span:first-child {
-  flex: 1; /* La respuesta ocupa todo el espacio disponible */
-  text-align: left; /* Alineación a la izquierda */
+.placeholder {
+  text-align: center;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.6);
 }
 
-.answer span:last-child {
-  text-align: right; /* Puntaje a la derecha */
-  margin-left: 20px;
-  white-space: nowrap; /* Evitar que el puntaje se rompa en líneas */
-}
-
-/* Puntos brillantes */
+/* Efectos de puntos brillantes */
+/* Efectos de puntos brillantes */
 .grid-container {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 75px;
+  right: 0;
+  bottom: 0;
   pointer-events: none;
 }
 
