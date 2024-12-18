@@ -4,7 +4,7 @@
       <el-col :span="8" style="display: grid;">
         <!-- Botón de "Inicio" con tipo dinámico -->
         <el-button 
-          @click="openControlledWindow" 
+          @click="$router.push('/control')" 
           type="primary">
           Presentacion
         </el-button>
@@ -53,6 +53,9 @@ beforeDestroy() {
   }
 },
 methods: {
+  openNewTab(route) {
+      window.open(route, '_blank'); // '_blank' abre la ruta en una nueva pestaña
+    },
   openControlledWindow() {
     // Abrir la ventana controlada
     this.controlledWindow = window.open(

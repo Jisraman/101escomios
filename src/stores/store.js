@@ -51,6 +51,9 @@ export const useEquiposStore = defineStore('equipos', {
       this.equipoA.nombre = "";
       this.equipoB.nombre = "";
     },
+    semiReiniciarPuntuaciones() {
+      this.acumulado = 0;
+    },
   },
 });
 

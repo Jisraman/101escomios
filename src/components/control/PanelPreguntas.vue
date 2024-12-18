@@ -115,8 +115,12 @@ export default {
       console.log(`Opción seleccionada: ${this.selectedOption}`);
     },
     showQuestion() {
+      this.storeEquipos.semiReiniciarPuntuaciones();
       const selectedQuestion = this.options.find(option => option.pregunta === this.selectedOption);
-
+      this.broadcastChannel.postMessage({
+          
+        acumulado:'cero'
+        });
       if (selectedQuestion) {
         this.tableData = selectedQuestion.respuestas.map((respuesta) => ({
           respuesta: respuesta.respuesta,

@@ -4,16 +4,15 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 const routes = [
-  
   {
     path: '/',
-    name: 'inicio',
-    component: () => import('../views/produccion/InicioLogo.vue')
+    name: 'home',
+    component: () => import('../views/control/ControladorVistas.vue')
   },
   {
-    path: '/tablero',
-    name: 'tablero',
-    component: () => import('../views/produccion/TableroPreguntas.vue')
+    path: '/control',
+    name: 'control',
+    component: () => import('../views/produccion/VistaControlada.vue')
   },
 ]
 
