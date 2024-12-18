@@ -190,5 +190,79 @@ export default {
 </script>
 
 <style scoped>
-/* Opcional: Estilo para ajustar el diseño */
+/* Estilos generales para la tabla */
+.el-table {
+  width: 100%;
+  margin-top: 20px;
+  font-family: 'Arial', sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Estilos para las celdas de la tabla */
+.el-table .cell {
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+  color: #333;  /* Color de texto oscuro para mejor contraste */
+}
+/* Estilos para la cabecera de la tabla */
+.el-table__header-wrapper{
+  background-color: #00796b !important;  /* Color de fondo verde oscuro */
+  color: white;               /* Color del texto en blanco */
+  font-size: 16px;            /* Tamaño de la fuente */
+  font-weight: bold;          /* Fuente en negrita */
+  text-align: center;         /* Alineación centrada */
+  padding: 12px 20px;         /* Espaciado de la cabecera */
+}
+
+/* Estilo para la fila activa de la cabecera */
+.el-table th:hover {
+  background-color: #004d40;  /* Color más oscuro cuando el usuario pasa el cursor */
+}
+
+/* Cabeceras centradas */
+.center-header {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  background-color: #f4f4f4;
+}
+
+/* Mejorar la visibilidad de las respuestas */
+.el-table-column:nth-child(1) .cell {
+  background-color: #e9f7f6;
+  color: #00796b;  /* Verde para las respuestas */
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Mejorar la visibilidad de la columna de popularidad */
+.el-table-column:nth-child(2) .cell {
+  background-color: #f1f8e9;
+  color: #388e3c;  /* Verde oscuro para la popularidad */
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Botones de acción en la tabla */
+.el-button {
+  margin-right: 10px;
+  font-size: 14px;
+  padding: 8px 12px;
+}
+
+.el-button:disabled {
+  background-color: #ccc;
+  border-color: #ccc;
+  color: #666;
+}
+
+/* Aumentar contraste en el hover de botones */
+.el-button:hover {
+  background-color: #388e3c;
+  color: white;
+  border-color: #388e3c;
+}
+
 </style>

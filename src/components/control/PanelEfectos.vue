@@ -1,7 +1,5 @@
 <template>
   <div class="sound-buttons-container">
-    <h1>Control de Sonidos</h1>
-
     <div class="sound-section">
       <h2>Sonidos</h2>
       <div class="buttons-group">
@@ -113,7 +111,7 @@ export default {
   align-items: center;
   gap: 30px;
   padding: 20px;
-  max-width: 600px;
+  max-width: 100%;
   margin: auto;
 }
 
