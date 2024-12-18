@@ -11,3 +11,8 @@ import VistaControlada from './views/produccion/VistaControlada.vue';
 </template>
 
 
+<style>
+*{
+  font-family: 'Segoe UI' !important;
+}
+</style>

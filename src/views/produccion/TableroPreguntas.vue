@@ -1,8 +1,8 @@
 <template>
   <div class="background">
     <!-- Logo del juego -->
-    <div class="logo-container">
-      <img src="@/assets/logoprograma2.png" alt="Logo del Juego" class="game-logo" />
+    <div class="acumulado-card">
+      <h1 class="puntaje">{{ acumulado }}</h1>
     </div>
 
     <!-- Contenedor principal del tablero -->
@@ -10,18 +10,18 @@
       <!-- Puntuaciones de los equipos -->
       <div class="scores">
         <div class="team left">
-          <p>{{ equipoA.nombre }}</p>
-          <p>{{ equipoA.puntuacion }}</p>
+          <h2>{{ equipoA.nombre }}</h2>
+          <h1 style="font-size: 3rem; margin-top: 0px">{{ equipoA.puntuacion }}</h1>
         </div>
         <div class="team right">
-          <p>{{ equipoB.nombre }}</p>
-          <p>{{ equipoB.puntuacion }}</p>
+          <h2>{{ equipoB.nombre }}</h2>
+          <h1 style="font-size: 3rem; margin-top: 0px">{{ equipoB.puntuacion }}</h1>
         </div>
       </div>
 
       <!-- Pregunta actual -->
       <div class="question">
-        <h1 >{{ acumulado }}</h1>
+        <h1 ref="preguntaElement" :class="{ reveal: pregunta!='' }">{{ pregunta }}</h1>
       </div>
 
       <!-- Respuestas -->
@@ -33,8 +33,8 @@
           <img 
             v-for="n in error" 
             :key="n" 
-            src="../../assets/x.png" 
-            alt="Error"
+            src="../../assets/no.jpg" 
+            alt=""
             class="error-image"
             :class="{'fade-in': showError, 'fade-out': !showError}"
           />
@@ -126,8 +126,20 @@ export default {
       }
 
       if (event.data.pregunta) {
-        this.pregunta = event.data.pregunta;
+        this.pregunta = '';  // Limpiar la pregunta antes de actualizar
+        this.pregunta = event.data.pregunta;  // Asignar la nueva pregunta
+        
+        // Forzar la animación de aparición (reaplicar la clase)
+        this.$nextTick(() => {
+          // Remover la clase para reiniciar la animación
+          this.$refs.preguntaElement.classList.remove('reveal');
+          // Forzar reflujo para reiniciar la animación
+          void this.$refs.preguntaElement.offsetWidth;
+          // Volver a añadir la clase
+          this.$refs.preguntaElement.classList.add('reveal');
+        });
       }
+
 
       if (event.data.respuestas) {
         this.respuestas = event.data.respuestas;
@@ -145,7 +157,7 @@ export default {
         // Controlar la animación de fade-out después de 2.5 segundos
         setTimeout(() => {
           this.showError = false;
-        }, 2500); // Tiempo en milisegundos (2.5 segundos en este caso)
+        }, 1200); // Tiempo en milisegundos (2.5 segundos en este caso)
       }
 
       if (event.data.temporizador) {
@@ -259,9 +271,9 @@ export default {
 /* Logo del juego con brillo */
 .logo-container {
   position: absolute;
-  top: 30px;
+  top: 20px;
   z-index: 3;
-  scale: 1.2;
+  scale: 1;
 }
 
 .game-logo {
@@ -282,38 +294,62 @@ export default {
 }
 
 /* Tablero */
+/* Centrar el acumulado-card */
+.acumulado-card {
+  position: absolute;
+  width: 180px;
+  height: 100px;
+  top: 0;
+  margin-top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  border-radius: 15px;
+  font-size: 2.5rem;
+  text-align: center;
+  z-index: 5;
+  border: 5px solid gold;
+  box-shadow: 0 0 20px gold;
+}
+
+.puntaje{
+  margin-top: 0px;
+}
+
+/* Brillo en los bordes del tablero con fondo sólido */
 .board {
   position: relative;
   width: 80%;
-  height: 400px;
   max-width: 700px;
-  background: rgba(0, 0, 0, 0.8);
-  border-radius: 20px;
-  padding: 20px;
+  height: 400px;
   margin-top: 100px;
-  color: white;
-  font-family: "Arial", sans-serif;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  z-index: 2;
-  text-align: center;
+  background-color: rgba(0, 0, 0, 0.8); /* Fondo sólido */
   border: 5px solid gold;
+  border-radius: 20px;
+  box-shadow: 0 0 30px gold;
+  padding: 20px;
+  color: white;
+  z-index: 2;
 }
+
 
 /* Puntuaciones como tarjetas laterales */
 .team {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.8);
-  padding: 10px 20px;
+  background: rgba(0, 0, 0);
+  padding: 20px 20px;
   border-radius: 10px;
   color: white;
-  font-size: 1.2rem;
+  font-size: .7rem;
   text-align: center;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  border: 3px solid gold;
-  width: 150px;          /* Tamaño fijo en ancho */
-  height: 80px;          /* Tamaño fijo en alto */
+  border: 5px solid gold;
+  border-radius: 20px;
+  box-shadow: 0 0 30px gold;
+  width: 180px;          /* Tamaño fijo en ancho */
+  height: 120px;          /* Tamaño fijo en alto */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -323,17 +359,25 @@ export default {
 }
 
 .team.left {
-  left: -250px;
+  left: -270px;
+  font-size: 1rem;
 }
 
 .team.right {
-  right: -250px;
+  right: -270px;
+  font-size: 1rem;
 }
 
 
 .question h1 {
   font-size: 2rem;
-  margin-bottom: 20px;
+  margin-top: 0px;
+  height: 70px;
+  display: flex;
+  width: fit-content;
+  text-align: center; 
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .answers {
@@ -431,6 +475,21 @@ export default {
   left: 50%; /* Centrado horizontal */
   transform: translate(-50%, -50%); /* Ajuste para garantizar el centro exacto */
   z-index: 10; /* Asegura que esté por encima de otros elementos */
+}
+/* Animación de revelado */
+.reveal {
+  animation: revealAnimation 1s ease-out;
+}
+
+@keyframes revealAnimation {
+  0% {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 </style>

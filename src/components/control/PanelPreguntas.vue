@@ -38,10 +38,17 @@
         <template #default="scope">
           <el-button
             :type="scope.row.showing ? 'info' : 'primary'"
-            @click="toggleShow(scope.row); showAnswer(scope.$index)"
-            :disabled="scope.row.showing || botonesDeshabilitados"
+            @click="toggleShow(scope.row)"
+            :disabled="scope.row.showing "
           >
             {{ scope.row.showing ? `${scope.$index + 1} Mostrado` : `${scope.$index + 1} Mostrar` }}
+          </el-button>
+          <el-button
+            :type="scope.row.showing && !scope.row.summed ? 'primary' : 'info'"
+            @click="sumResult(scope.row)"
+            :disabled="!scope.row.showing || scope.row.summed || botonesDeshabilitados"
+          >
+            {{ scope.row.showing && !scope.row.summed ? 'R'+`${scope.$index + 1}: +${scope.row.popularidad}` : `${scope.$index + 1} ✓` }}
           </el-button>
         </template>
       </el-table-column>
@@ -93,9 +100,13 @@ export default {
     toggleShow(row) {
       row.showing = !row.showing;
       if (row.showing) {
-        this.acumulado += row.popularidad;
+        this.broadcastChannel.postMessage({
+          action: "mostrar_respuesta",
+          index: this.tableData.indexOf(row) + 1,
+        });
+        this.soundChannel.postMessage({ sound: "punto" });
       }
-      console.log(`Estado de fila cambiado: ${row.respuesta}, Acumulado: ${this.acumulado}`);
+      console.log(`Estado de fila cambiado: ${row.respuesta}`);
     },
     goToNextOption() {
       const currentIndex = this.options.findIndex(option => option.pregunta === this.selectedOption);
@@ -111,6 +122,7 @@ export default {
           respuesta: respuesta.respuesta,
           popularidad: respuesta.popularidad,
           showing: false,
+          summed: false,  // Nueva propiedad para saber si ya se sumaron los puntos
         }));
 
         this.storePreguntas.setPregunta(selectedQuestion);
@@ -128,15 +140,18 @@ export default {
         console.log("Pregunta enviada:", selectedQuestion.pregunta);
       }
     },
-    showAnswer(indice) {
-      this.broadcastChannel.postMessage({
-        action: "mostrar_respuesta",
-        index: indice + 1,
-      });
-      this.broadcastChannel.postMessage({ acumulado: this.acumulado });
+    sumResult(row) {
+      if (row.showing && !row.summed) {
+        this.acumulado += row.popularidad;
+        row.summed = true; // Marcar que los puntos ya fueron sumados para esa fila
 
-      this.soundChannel.postMessage({ sound: "punto" });
-      console.log(`Mostrar respuesta en el índice: ${indice}`);
+        this.broadcastChannel.postMessage({
+          action: "sumar_puntos",
+          acumulado: this.acumulado,
+        });
+
+        console.log(`Puntos sumados: ${row.popularidad}, Acumulado: ${this.acumulado}`);
+      }
     },
     enviarPuntaje(equipo) {
       this.soundChannel.postMessage({ sound: "ganador" });
@@ -165,7 +180,7 @@ export default {
         console.log(`Puntaje del Equipo Blue enviado: ${this.acumulado}`);
       }
 
-      // Resetear el acumulado y deshabilitar los botones
+      // Resetear el acumulado y deshabilitar los botones de sumar
       this.acumulado = 0;
       this.botonesDeshabilitados = true;
       this.broadcastChannel.postMessage({ acumulado: this.acumulado });

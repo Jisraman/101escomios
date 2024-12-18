@@ -1,304 +1,304 @@
 export const preguntas = [
-    {
-      pregunta: "Objeto que se pierden con mayor frecuencia en ESCOM",
+  {
+    pregunta: "Menciona algún apodo famoso de un profesor",
+    respuestas: [
+      { respuesta: "Mandrake o Cantante", popularidad: 10 },
+      { respuesta: "Krillin ", popularidad: 8 },
+      { respuesta: "Embarcación", popularidad: 6 },
+      { respuesta: "Mosso el hermoso", popularidad: 4 },
+      { respuesta: "General Tecla", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "Menciona una comida que todo estudiahambre de ESCOM ha comido",
+    respuestas: [
+      { respuesta: "Chilaquiles", popularidad: 10 },
+      { respuesta: "Tacos", popularidad: 8 },
+      { respuesta: "Maruchan", popularidad: 6 },
+      { respuesta: "Pizzas ", popularidad: 4 },
+      { respuesta: "Tortas", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "Menciona una asignatura que la mayoría ha recursado/reprobado",
+    respuestas: [
+      { respuesta: "Calculo/Calculo Aplicado", popularidad: 10 },
+      { respuesta: "Análisis Vectorial", popularidad: 8 },
+      { respuesta: "Ecuaciones Diferenciales", popularidad: 6 },
+      { respuesta: "Matemáticas Avanzadas", popularidad: 4 },
+      { respuesta: "Probabilidad y Estadistica", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "Un programador no dice “No compila”, dice…",
+    respuestas: [
+      { respuesta: "No jala", popularidad: 10 },
+      { respuesta: "En mi compu si jalaba", popularidad: 8 },
+      { respuesta: "Falta el punto y coma / Falta una dependencia", popularidad: 6 },
+      { respuesta: "Ayer si jalaba", popularidad: 4 },
+      { respuesta: "Esta buggeado / Tiene bugs", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "¿Cuál es el hobby favorito de un escomiano?",
+    respuestas: [
+      { respuesta: "Videojuegos", popularidad: 10 },
+      { respuesta: "Anime", popularidad: 8 },
+      { respuesta: "Programar", popularidad: 6 },
+      { respuesta: "Palapas", popularidad: 4 },
+      { respuesta: "Dormir", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "¿Cuál es el lenguaje de programación más usado dentro de la ESCOM?",
+    respuestas: [
+      { respuesta: "Python", popularidad: 10 },
+      { respuesta: "C", popularidad: 8 },
+      { respuesta: "Java", popularidad: 6 },
+      { respuesta: "C++", popularidad: 4 },
+      { respuesta: "JavaScript", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "¿Cuál es el proyecto/práctica más pirateado dentro de ESCOM?",
+    respuestas: [
+      { respuesta: "Gelapack", popularidad: 10 },
+      { respuesta: "Mario Bros", popularidad: 8 },
+      { respuesta: "Prácticas de Tecla", popularidad: 6 },
+      { respuesta: "Torres de Hanoi", popularidad: 4 },
+      { respuesta: "Calculadora de Tlatoani", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "¿Cuál es el profesor más curioso de la ESCOM?",
+    respuestas: [
+      { respuesta: "Tecla", popularidad: 10 },
+      { respuesta: "Mandrake", popularidad: 8 },
+      { respuesta: "Nachito", popularidad: 6 },
+      { respuesta: "Gelacio", popularidad: 4 },
+      { respuesta: "Trujillo", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "¿En qué te basas para meter con un profesor?",
+    respuestas: [
+      { respuesta: "Mis profesores.com", popularidad: 10 },
+      { respuesta: "Barco", popularidad: 8 },
+      { respuesta: "Horario", popularidad: 6 },
+      { respuesta: "Amigos", popularidad: 4 },
+      { respuesta: "Cupo", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "Menciona otra forma de decirle a ESCOM",
+    respuestas: [
+      { respuesta: "ESCUM", popularidad: 10 },
+      { respuesta: "Escuela Superior de Comedia", popularidad: 8 },
+      { respuesta: "ESCOMBROS", popularidad: 6 },
+      { respuesta: "ESCUMBIA", popularidad: 4 },
+      { respuesta: "Frikiplaza", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "Menciona cual es la característica más común de un escomiano",
+    respuestas: [
+      { respuesta: "Lentes", popularidad: 10 },
+      { respuesta: "Otaku", popularidad: 8 },
+      { respuesta: "No se baña", popularidad: 6 },
+      { respuesta: "Virgen", popularidad: 4 },
+      { respuesta: "Cabello largo", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "¿Qué comida crees que hace más daño en la cafetería?",
+    respuestas: [
+      { respuesta: "Pollo", popularidad: 10 },
+      { respuesta: "Chilaquiles", popularidad: 8 },
+      { respuesta: "Torta", popularidad: 6 },
+      { respuesta: "Todo", popularidad: 4 },
+      { respuesta: "Sushi", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "Razones por las que dicen que en ESCOM son virgenes",
+    respuestas: [
+      { respuesta: "Por otakus", popularidad: 10 },
+      { respuesta: "No saben ligar", popularidad: 8 },
+      { respuesta: "Les gusta LINUX", popularidad: 6 },
+      { respuesta: "Muchos son de Batiz", popularidad: 4 },
+      { respuesta: "No hay mujeres", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "Un programador con algo de dignidad escucha",
+    respuestas: [
+      { respuesta: "Rock", popularidad: 10 },
+      { respuesta: "Openings de anime", popularidad: 8 },
+      { respuesta: "Metal", popularidad: 6 },
+      { respuesta: "Cumbia", popularidad: 4 },
+      { respuesta: "Caifanes", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "Estaciones más feas del metro",
+    respuestas: [
+      { respuesta: "Pantitlan", popularidad: 10 },
+      { respuesta: "Hidalgo", popularidad: 8 },
+      { respuesta: "La raza", popularidad: 6 },
+      { respuesta: "Indios Verdes", popularidad: 4 },
+      { respuesta: "Tepito", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "Cosas más comunes en la mochila de un escomiano",
+    respuestas: [
+      { respuesta: "Laptop", popularidad: 10 },
+      { respuesta: "Cables/Circuitos", popularidad: 8 },
+      { respuesta: "Cargador", popularidad: 6 },
+      { respuesta: "USB", popularidad: 4 },
+      { respuesta: "Pines de anime", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "Además de mandrake, ¿con qué otro profesor necesitas una veladora?",
+    respuestas: [
+      { respuesta: "Jurado", popularidad: 10 },
+      { respuesta: "Embarcación / Encarnación", popularidad: 8 },
+      { respuesta: "Carballo", popularidad: 6 },
+      { respuesta: "Trujillo", popularidad: 4 },
+      { respuesta: "Gabriela de jesus", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "Algo que solo pasa en escom…",
+    respuestas: [
+      { respuesta: "Femboys", popularidad: 10 },
+      { respuesta: "Hombres vestidos de maids/monas chinas", popularidad: 8 },
+      { respuesta: "Receso", popularidad: 6 },
+      { respuesta: "Furros", popularidad: 4 },
+      { respuesta: "Cosplays", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "¿Quien sí resuelve en ESCOM?",
+    respuestas: [
+      { respuesta: "Mosso", popularidad: 10 },
+      { respuesta: "Nadie", popularidad: 8 },
+      { respuesta: "Ferrer", popularidad: 6 },
+      { respuesta: "Zarate Asunción", popularidad: 4 },
+      { respuesta: "Linares", popularidad: 2 },
+    ],
+  },
+  {
+      pregunta: "¿En donde pasas tu tiempo libre en ESCOM?",
       respuestas: [
-        { respuesta: "Sudadera/chamarra/sueter", popularidad: 10 },
-        { respuesta: "Credencial", popularidad: 8 },
-        { respuesta: "Termo/Botella de agua", popularidad: 6 },
-        { respuesta: "Audífonos", popularidad: 4 },
-        { respuesta: "Dignidad", popularidad: 2 },
+        { respuesta: "Palapas", popularidad: 10 },
+        { respuesta: "Pastos", popularidad: 8 },
+        { respuesta: "Salon", popularidad: 6 },
+        { respuesta: "Biblioteca", popularidad: 4 },
+        { respuesta: "Letras", popularidad: 2 },
       ],
     },
-    {
-      pregunta: "¿Qué guarda un ESCOMIO en su USB o disco duro?",
+  {
+    pregunta: "Menciona profesor con el que nunca alcanzas cupo",
+    respuestas: [
+      { respuesta: "Fernando Aguilar (FAS)", popularidad: 10 },
+      { respuesta: "Nidia", popularidad: 8 },
+      { respuesta: "Nacho", popularidad: 6 },
+      { respuesta: "Ariel", popularidad: 4 },
+      { respuesta: "Jorge Silva", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "Además de letras, ¿cuales son otros lugares populares para reunirse en escom?",
+    respuestas: [
+      { respuesta: "Palapas", popularidad: 10 },
+      { respuesta: "Pastos", popularidad: 8 },
+      { respuesta: "Biblioteca", popularidad: 6 },
+      { respuesta: "Cafetería", popularidad: 4 },
+      { respuesta: "Canchas", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "Personaje polémico de escom",
+    respuestas: [
+      { respuesta: "Víctor Moreno", popularidad: 10 },
+      { respuesta: "El Doseador", popularidad: 8 },
+      { respuesta: "Tecla", popularidad: 6 },
+      { respuesta: "Mosso (El hermoso)", popularidad: 4 },
+      { respuesta: "Ukranio", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "Semestre más pesado de escom",
+    respuestas: [
+      { respuesta: "Cuarto semestre", popularidad: 10 },
+      { respuesta: "Quinto semestre", popularidad: 8 },
+      { respuesta: "Tercer semestre", popularidad: 6 },
+      { respuesta: "Séptimo semestre", popularidad: 4 },
+      { respuesta: "Sexto semestre", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "Tema de TT más repetido",
+    respuestas: [
+      { respuesta: "Página web (y variantes como sistemas web, aplicaciones web, etc.)", popularidad: 10 },
+      { respuesta: "IA (Reconocimiento, redes neuronales, machine learning)", popularidad: 8 },
+      { respuesta: "CRUD", popularidad: 6 },
+      { respuesta: "Sistema de gestión de algo", popularidad: 4 },
+      { respuesta: "SAES 2.0", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "Juego de mesa más popular en escom",
+    respuestas: [
+      { respuesta: "UNO", popularidad: 10 },
+      { respuesta: "Ajedrez", popularidad: 8 },
+      { respuesta: "Baraja", popularidad: 6 },
+      { respuesta: "Yu-Gi-Oh", popularidad: 4 },
+      { respuesta: "Ping Pong", popularidad: 2 },
+    ],
+  },
+  {
+      pregunta: "¿Cuáles son los clubes más conocidos en ESCOM?",
       respuestas: [
-        { respuesta: "Códigos/proyectos/tareas/practicas", popularidad: 10 },
-        { respuesta: "Distro de LINUX", popularidad: 8 },
-        { respuesta: "Anime/monas chinas", popularidad: 6 },
-        { respuesta: "Videojuegos", popularidad: 4 },
-        { respuesta: "Respaldo de datos", popularidad: 2 },
+        { respuesta: "Algoritmia", popularidad: 10 },
+        { respuesta: "Robotica", popularidad: 8 },
+        { respuesta: "Baile", popularidad: 6 },
+        { respuesta: "Smash", popularidad: 4 },
+        { respuesta: "Ping-Pong", popularidad: 2 },
       ],
     },
-    {
-      pregunta: "Consola de videojuegos favorita de la ESCOMUNIDAD",
-      respuestas: [
-        { respuesta: "PC GAMER", popularidad: 10 },
-        { respuesta: "Nintendo Switch", popularidad: 8 },
-        { respuesta: "PLAYSTATION 4|5", popularidad: 6 },
-        { respuesta: "XBOX SERIES X|S", popularidad: 4 },
-        { respuesta: "Celular", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "Entre Sociales, Circuitos, Matemáticas y Programación, ¿Cuáles consideras que son las materias más útiles?",
-      respuestas: [
-        { respuesta: "Programación", popularidad: 10 },
-        { respuesta: "Matemáticas", popularidad: 8 },
-        { respuesta: "Circuitos", popularidad: 6 },
-        { respuesta: "Sociales", popularidad: 4 },
-        { respuesta: "Bases de datos", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "¿Qué baños son los más cómodos? (IA, Biblioteca, Gobierno, etc.)",
-      respuestas: [
-        { respuesta: "Baños de Biblioteca", popularidad: 10 },
-        { respuesta: "Nuevos baños de ISC", popularidad: 8 },
-        { respuesta: "Baños de IA", popularidad: 6 },
-        { respuesta: "Baños antiguos de ISC", popularidad: 4 },
-        { respuesta: "Baños del CIC", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "Profesor con PEOR puntuación en MisProfesores.com",
-      respuestas: [
-        { respuesta: "Mandrake", popularidad: 10 },
-        { respuesta: "Aldana", popularidad: 8 },
-        { respuesta: "Luna Caballero", popularidad: 6 },
-        { respuesta: "Encarnacion", popularidad: 4 },
-        { respuesta: "Tecla", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "Profesor con MEJOR puntuación en MisProfesores.com",
-      respuestas: [
-        { respuesta: "Ariel", popularidad: 10 },
-        { respuesta: "Nachito", popularidad: 8 },
-        { respuesta: "Zárate", popularidad: 6 },
-        { respuesta: "Ortuño", popularidad: 4 },
-        { respuesta: "Didier", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "Adjetivo o etiqueta que recibe un miembro de la comunidad de ESCOM",
-      respuestas: [
-        { respuesta: "Otaku", popularidad: 10 },
-        { respuesta: "Escomio", popularidad: 8 },
-        { respuesta: "Virgen", popularidad: 6 },
-        { respuesta: "Escombro", popularidad: 4 },
-        { respuesta: "Programador", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "Materia más reprobada en ESCOM",
-      respuestas: [
-        { respuesta: "Cálculo", popularidad: 10 },
-        { respuesta: "Ecuaciones diferenciales", popularidad: 8 },
-        { respuesta: "Matemáticas Avanzadas", popularidad: 6 },
-        { respuesta: "Álgebra lineal", popularidad: 4 },
-        { respuesta: "Análisis vectorial", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "Proyecto MÁS QUEMADO/REPETIDO de fin de semestre",
-      respuestas: [
-        { respuesta: "Página web", popularidad: 10 },
-        { respuesta: "CRUD", popularidad: 8 },
-        { respuesta: "Mario Bros", popularidad: 6 },
-        { respuesta: "Tienda", popularidad: 4 },
-        { respuesta: "Aplicación web", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "¿Qué tiene ESCOM que no tienen otras escuelas?",
-      respuestas: [
-        { respuesta: "Estacionamiento", popularidad: 10 },
-        { respuesta: "Lockers", popularidad: 8 },
-        { respuesta: "Agua", popularidad: 6 },
-        { respuesta: "Papel de baño", popularidad: 4 },
-        { respuesta: "Jabón/Gel antibacterial", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "Departamento o área menos útil en ESCOM",
-      respuestas: [
-        { respuesta: "CRUD", popularidad: 10 },
-        { respuesta: "GESTIÓN ESCOLAR", popularidad: 8 },
-        { respuesta: "BECAS", popularidad: 6 },
-        { respuesta: "EXTENSIÓN Y APOYOS", popularidad: 4 },
-        { respuesta: "BIBLIOTECA", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "¿Qué materia quitarías del plan de estudios?",
-      respuestas: [
-        { respuesta: "Ingeniería Ética y Sociedad", popularidad: 10 },
-        { respuesta: "Circuitos", popularidad: 8 },
-        { respuesta: "Finanzas Empresariales", popularidad: 6 },
-        { respuesta: "Ética", popularidad: 4 },
-        { respuesta: "Comunicación Oral y Escrita", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "Si pudieras saltarte un semestre ¿Cuál sería?",
-      respuestas: [
-        { respuesta: "1", popularidad: 10 },
-        { respuesta: "2", popularidad: 8 },
-        { respuesta: "3", popularidad: 6 },
-        { respuesta: "4", popularidad: 4 },
-        { respuesta: "5", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "Materia que se pasa sola",
-      respuestas: [
-        { respuesta: "COE", popularidad: 10 },
-        { respuesta: "Liderazgo", popularidad: 8 },
-        { respuesta: "Finanzas", popularidad: 6 },
-        { respuesta: "Ética", popularidad: 4 },
-        { respuesta: "Gestión Empresarial", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "Menciona los lenguajes de programación más usados por los ESCOMIOS",
-      respuestas: [
-        { respuesta: "Python", popularidad: 10 },
-        { respuesta: "C", popularidad: 8 },
-        { respuesta: "Java", popularidad: 6 },
-        { respuesta: "C++", popularidad: 4 },
-        { respuesta: "JavaScript", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "Razones por las que un ESCOMIO se puede enojar",
-      respuestas: [
-        { respuesta: "Mal internet", popularidad: 10 },
-        { respuesta: "No compila el código", popularidad: 8 },
-        { respuesta: "Insultar su ánime/mona china favorito", popularidad: 6 },
-        { respuesta: "Lo insultan diciendo “virgen”", popularidad: 4 },
-        { respuesta: "Malos profesores", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "Cosa que NO sabe hacer un ESCOMIO",
-      respuestas: [
-        { respuesta: "Ligar", popularidad: 10 },
-        { respuesta: "Bailar", popularidad: 8 },
-        { respuesta: "Hablar con Mujeres", popularidad: 6 },
-        { respuesta: "Socializar", popularidad: 4 },
-        { respuesta: "Redactar/Exponer", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "¿Qué actividades hacen feliz a un ESCOMIO?",
-      respuestas: [
-        { respuesta: "Jugar Videojuegos", popularidad: 10 },
-        { respuesta: "Ver anime", popularidad: 8 },
-        { respuesta: "Programar bien a la primera", popularidad: 6 },
-        { respuesta: "La música", popularidad: 4 },
-        { respuesta: "Ir al shine", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "Profesor con PEOR carácter",
-      respuestas: [
-        { respuesta: "Aldana", popularidad: 10 },
-        { respuesta: "Castañón", popularidad: 8 },
-        { respuesta: "Miguel Brito", popularidad: 6 },
-        { respuesta: "Lorena", popularidad: 4 },
-        { respuesta: "Ceballos", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "¿Qué fondo de pantalla utiliza más frecuentemente un ESCOMIO?",
-      respuestas: [
-        { respuesta: "Mona china/Su waifu", popularidad: 10 },
-        { respuesta: "Anime en general", popularidad: 8 },
-        { respuesta: "Referente a un videojuego", popularidad: 6 },
-        { respuesta: "Nada en específico", popularidad: 4 },
-      ],
-    },
-    {
-      pregunta: "Anime más popular dentro de la ESCOM",
-      respuestas: [
-        { respuesta: "One Piece", popularidad: 10 },
-        { respuesta: "Demon Slayer", popularidad: 8 },
-        { respuesta: "Dragon Ball", popularidad: 6 },
-        { respuesta: "Boku no pico", popularidad: 4 },
-        { respuesta: "Attack on titan", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "Estás detenido, ¿A qué profesor llamas para que te saque de ahí?",
-      respuestas: [
-        { respuesta: "Mosso", popularidad: 10 },
-        { respuesta: "Linares", popularidad: 8 },
-        { respuesta: "Alcántara", popularidad: 6 },
-        { respuesta: "Ariel", popularidad: 4 },
-        { respuesta: "Ferrer", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "Si los estudiantes pudieran elegir al 100% a su director, ¿Quién sería?",
-      respuestas: [
-        { respuesta: "Mosso", popularidad: 10 },
-        { respuesta: "Linares", popularidad: 8 },
-        { respuesta: "Edgardo", popularidad: 6 },
-        { respuesta: "Tecla", popularidad: 4 },
-        { respuesta: "Idalia", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "¿Cuál es la comida más pedida en la cafetería?",
-      respuestas: [
-        { respuesta: "Chilaquiles", popularidad: 10 },
-        { respuesta: "Tortas", popularidad: 8 },
-        { respuesta: "Comida corrida", popularidad: 6 },
-        { respuesta: "Hamburguesa", popularidad: 4 },
-        { respuesta: "Maruchan", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "¿Qué objeto siempre lleva un verdadero Otaku en su mochila?",
-      respuestas: [
-        { respuesta: "Llavero de mona china/de anime", popularidad: 10 },
-        { respuesta: "Pin de su anime favorito", popularidad: 8 },
-        { respuesta: "Un manga", popularidad: 6 },
-        { respuesta: "Mona china/waifu", popularidad: 4 },
-        { respuesta: "Figura de anime", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "¿Qué es OBO?",
-      respuestas: [
-        { respuesta: "Esta", popularidad: 10 },
-        { respuesta: "Otra respuesta", popularidad: 8 },
-        { respuesta: "Más", popularidad: 6 },
-        { respuesta: "Algo", popularidad: 4 },
-        { respuesta: "Nada", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "¿A qué huele un ESCOMIO?",
-      respuestas: [
-        { respuesta: "OBO", popularidad: 10 },
-        { respuesta: "Humedad", popularidad: 8 },
-        { respuesta: "Sudor", popularidad: 6 },
-        { respuesta: "Mugre", popularidad: 4 },
-        { respuesta: "A gorditas o taquitos", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "Mejor plataforma para descargar software pirata",
-      respuestas: [
-        { respuesta: "uTorrent", popularidad: 10 },
-        { respuesta: "Mediafire", popularidad: 8 },
-        { respuesta: "Mega", popularidad: 6 },
-        { respuesta: "Youtube/Algún tutorial o video de youtube", popularidad: 4 },
-        { respuesta: "El amigo.com", popularidad: 2 },
-      ],
-    },
-    {
-      pregunta: "¿Cuál es el software que no le puede faltar a un ESCOMIO?",
-      respuestas: [
-        { respuesta: "Visual Studio Code", popularidad: 10 },
-        { respuesta: "Linux", popularidad: 8 },
-        { respuesta: "LOL /League of Legends", popularidad: 6 },
-        { respuesta: "Steam", popularidad: 4 },
-        { respuesta: "GitHub", popularidad: 2 },
-      ],
-    },
-    // Agrega más preguntas con el mismo formato...
-  ];
-  
-  export default preguntas
+  {
+    pregunta: "Sinodal más difícil que evalúa un TT",
+    respuestas: [
+      { respuesta: "Gabriela de Jesús", popularidad: 10 },
+      { respuesta: "Idalia", popularidad: 8 },
+      { respuesta: "Mandrake", popularidad: 6 },
+      { respuesta: "Edgardo", popularidad: 4 },
+      { respuesta: "Lorena", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "¿Qué es OBO?",
+    respuestas: [
+      { respuesta: "Esta", popularidad: 10 },
+      { respuesta: "Otra respuesta", popularidad: 8 },
+      { respuesta: "Más", popularidad: 6 },
+      { respuesta: "Algo", popularidad: 4 },
+      { respuesta: "Nada", popularidad: 2 },
+    ],
+  },
+  {
+    pregunta: "¿A qué huele un ESCOMIO?",
+    respuestas: [
+      { respuesta: "OBO", popularidad: 10 },
+      { respuesta: "Humedad", popularidad: 8 },
+      { respuesta: "Sudor", popularidad: 6 },
+      { respuesta: "Mugre", popularidad: 4 },
+      { respuesta: "A gorditas o taquitos", popularidad: 2 },
+    ],
+  },
+  // Agrega más preguntas con el mismo formato...
+];
+export default preguntas;
