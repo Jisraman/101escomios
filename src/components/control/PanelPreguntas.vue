@@ -1,11 +1,26 @@
 <template>
   <div>
+
+    <div style="display: flex; margin-left: auto; margin-right: auto; width: 70%; margin-top: 30px; margin-bottom: 30px;">
+      <div style="display: flex; margin-left: auto; margin-right: auto; text-align: center;">
+        <el-button type="primary" @click="downloadTemplate">Bajar Plantilla Ejemplo Preguntas</el-button>
+      </div>
+      <div style="display: block; margin-left: auto; margin-right: auto; ">
+        <p style="display: flex; margin-left: auto; margin-right: auto;">Subir preguntas</p>
+        <input style="display: flex; margin-left: auto; margin-right: auto;" type="file" @change="loadQuestionsFromExcel" accept=".xlsx, .xls" />
+
+      </div>
+    </div>
     <!-- Select y Botón Siguiente -->
     <div style="display: flex; margin-left: auto; margin-right: auto; width: 70%;">
+       <!-- Botón para descargar plantilla -->
+        
+      
       <el-select
         v-model="selectedOption"
         placeholder="Selecciona una Pregunta"
         style="margin-right: auto; width: 80%;"
+        :disabled="seleccionBloqueada"
       >
         <el-option 
           v-for="(option, index) in options" 
@@ -14,9 +29,9 @@
           :value="option.pregunta" 
         />
       </el-select>
-      <el-button type="primary" @click="goToNextOption">Siguiente</el-button>
+      <el-button type="primary" @click="goToNextOption" :disabled="seleccionBloqueada">Siguiente</el-button>
 
-      <el-button type="primary" @click="showQuestion">
+      <el-button type="primary" @click="showQuestion" :disabled="seleccionBloqueada">
         Seleccionar
       </el-button>
     </div>
@@ -26,29 +41,33 @@
       <el-table-column 
         prop="respuesta" 
         label="Respuesta" 
-        :label-class-name="'center-header'" 
+        :label-class-name="'center-header'"
+        align="center"
       />
       <el-table-column 
         prop="popularidad" 
         label="Popularidad" 
         :label-class-name="'center-header'" 
+        align="center"
       />
       <!-- Columna personalizada para acciones -->
-      <el-table-column label="Acciones" width="300" :label-class-name="'center-header'">
+      <el-table-column label="Acciones" width="400" align="center" >
         <template #default="scope">
           <el-button
             :type="scope.row.showing ? 'info' : 'primary'"
             @click="toggleShow(scope.row)"
             :disabled="scope.row.showing "
           >
-            {{ scope.row.showing ? `${scope.$index + 1} Mostrado` : `${scope.$index + 1} Mostrar` }}
+            {{ scope.row.showing ? `R${scope.$index + 1} Sólo Mostrado` : `R${scope.$index + 1} Sólo Mostrar` }}
           </el-button>
           <el-button
-            :type="scope.row.showing && !scope.row.summed ? 'primary' : 'info'"
-            @click="sumResult(scope.row)"
-            :disabled="!scope.row.showing || scope.row.summed || botonesDeshabilitados"
+            :type="scope.row.showing && !scope.row.summed ? 'info' : 'primary'"
+            @click="toggleShow(scope.row); sumResult(scope.row);"
+            :disabled="scope.row.showing || scope.row.summed || botonesDeshabilitados"
           >
-            {{ scope.row.showing && !scope.row.summed ? 'R'+`${scope.$index + 1}: +${scope.row.popularidad}` : `${scope.$index + 1} ✓` }}
+            {{ scope.row.showing ? `R${scope.$index + 1} Mostrado y acumulado` : `R${scope.$index + 1} Mostrar y Acumular` }}
+
+           <!-- {{ scope.row.showing && !scope.row.summed ? `${scope.$index + 1} '-Acumulado': ${scope.row.popularidad}` : `${scope.$index + 1} '-Acumular': ${scope.row.popularidad}` }}--->
           </el-button>
         </template>
       </el-table-column>
@@ -67,16 +86,17 @@
 </template>
 
 <script>
-import { preguntas } from '../../stores/preguntas';
+//import { preguntas } from '../../stores/preguntas';
 import { usePreguntasStore } from '../../stores/store';
 import { useEquiposStore } from '../../stores/store';
+import * as XLSX from 'xlsx';
 
 export default {
   name: "TablaPuntos",
   data() {
     return {
       selectedOption: null,           // Opción seleccionada
-      options: [...preguntas],        // Lista de preguntas
+      options: [],        // Lista de preguntas
       tableData: [],                  // Datos para la tabla
       storePreguntas: usePreguntasStore(),
       storeEquipos: useEquiposStore(),
@@ -84,7 +104,8 @@ export default {
       broadcastChannel: null,         // Canal de comunicación
       soundChannel: null,             // Canal para el sonido
       acumulado: 0,                   // Puntaje acumulado
-      botonesDeshabilitados: false    // Estado para deshabilitar botones
+      botonesDeshabilitados: false,    // Estado para deshabilitar botones
+      seleccionBloqueada: false // Nuevo estado para bloquear select y botones
     };
   },
   mounted() {
@@ -97,6 +118,41 @@ export default {
     }
   },
   methods: {
+    async loadQuestionsFromExcel(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const data = await file.arrayBuffer();
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+
+      const rawData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+      this.options = rawData.slice(1).map(row => ({
+        pregunta: row[0],
+        respuestas: [
+          { respuesta: row[1] || '', popularidad: parseInt(row[2]) || 0 },
+          { respuesta: row[3] || '', popularidad: parseInt(row[4]) || 0 },
+          { respuesta: row[5] || '', popularidad: parseInt(row[6]) || 0 },
+          { respuesta: row[7] || '', popularidad: parseInt(row[8]) || 0 },
+          { respuesta: row[9] || '', popularidad: parseInt(row[10]) || 0 },
+        ],
+      }));
+
+      console.log("Preguntas cargadas:", this.options);
+    },
+    downloadTemplate() {
+      const templateData = [
+        ["Pregunta", "Respuesta 1", "Popularidad 1", "Respuesta 2", "Popularidad 2", "Respuesta 3", "Popularidad 3", "Respuesta 4", "Popularidad 4", "Respuesta 5", "Popularidad 5"],
+        ["Ejemplo de pregunta", "Ejemplo respuesta 1", 50, "Ejemplo respuesta 2", 30, "Ejemplo respuesta 3", 20, "Ejemplo respuesta 4", 10, "Ejemplo respuesta 5", 5],
+      ];
+
+      const worksheet = XLSX.utils.aoa_to_sheet(templateData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Plantilla");
+
+      XLSX.writeFile(workbook, "Plantilla_Preguntas.xlsx");
+    },
     toggleShow(row) {
       row.showing = !row.showing;
       if (row.showing) {
@@ -105,6 +161,9 @@ export default {
           index: this.tableData.indexOf(row) + 1,
         });
         this.soundChannel.postMessage({ sound: "punto" });
+
+        // Bloquea los controles de selección
+        this.seleccionBloqueada = true;
       }
       console.log(`Estado de fila cambiado: ${row.respuesta}`);
     },
@@ -117,6 +176,7 @@ export default {
     showQuestion() {
       this.storeEquipos.semiReiniciarPuntuaciones();
       const selectedQuestion = this.options.find(option => option.pregunta === this.selectedOption);
+      this.acumulado=0;
       this.broadcastChannel.postMessage({
           
         acumulado:'cero'
@@ -166,10 +226,9 @@ export default {
           equipoA: {
             nombre: this.storeEquipos.equipoA.nombre,
             puntuacion: this.storeEquipos.equipoA.puntuacion,
-          },
-          acumulado:'cero'
+          }
         });
-        console.log(`Puntaje del Equipo Azul enviado: ${this.acumulado}`);
+        console.log(`Puntaje del Equipo A enviado: ${this.acumulado}`);
       } else if (equipo === 'B') {
         this.storeEquipos.actualizarPuntuacion('B', this.acumulado);
         this.broadcastChannel.postMessage({
@@ -177,18 +236,17 @@ export default {
           equipoB: {
             nombre: this.storeEquipos.equipoB.nombre,
             puntuacion: this.storeEquipos.equipoB.puntuacion,
-          },
-          acumulado:'cero'
-
+          }
         });
-        console.log(`Puntaje del Equipo Blue enviado: ${this.acumulado}`);
+        console.log(`Puntaje del Equipo B enviado: ${this.acumulado}`);
       }
 
-      // Resetear el acumulado y deshabilitar los botones de sumar
+      // Resetear acumulado, desbloquear controles y botones
       this.acumulado = 0;
       this.botonesDeshabilitados = true;
-      this.broadcastChannel.postMessage({ acumulado: this.acumulado });
+      this.seleccionBloqueada = false; // Desbloquear selección
     }
+
   }
 };
 </script>
@@ -212,7 +270,7 @@ export default {
 }
 /* Estilos para la cabecera de la tabla */
 .el-table__header-wrapper{
-  background-color: #00796b !important;  /* Color de fondo verde oscuro */
+  background-color: #aeadf3 !important;  /* Color de fondo verde oscuro */
   color: white;               /* Color del texto en blanco */
   font-size: 16px;            /* Tamaño de la fuente */
   font-weight: bold;          /* Fuente en negrita */
@@ -222,7 +280,7 @@ export default {
 
 /* Estilo para la fila activa de la cabecera */
 .el-table th:hover {
-  background-color: #004d40;  /* Color más oscuro cuando el usuario pasa el cursor */
+  background-color: #ff00b3;  /* Color más oscuro cuando el usuario pasa el cursor */
 }
 
 /* Cabeceras centradas */
@@ -264,9 +322,9 @@ export default {
 
 /* Aumentar contraste en el hover de botones */
 .el-button:hover {
-  background-color: #388e3c;
+  background-color: #aeadf3;
   color: white;
-  border-color: #388e3c;
+  border-color: #8785ff;
 }
 
 </style>
