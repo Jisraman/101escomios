@@ -1,17 +1,23 @@
 <template>
   <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
     <!-- Entrada para Equipo A -->
-    <div style="display: flex; align-items: center; gap: 10px;">
-      <el-input 
-        v-model="equipoA.nombre" 
-        placeholder="Nombre del Equipo 1"
-        style="width: 300px;"
-      ></el-input>
-      <el-input 
-        v-model="equipoB.nombre" 
-        placeholder="Nombre del Equipo 2"
-        style="width: 300px;"
-      ></el-input>
+    <div style="display: block; align-items: center; gap: 10px;">
+      <div>
+        <p style="width: 100%; text-align: center;">Escribe el nombre de los equipos y despues da click en "Mostrar"</p>
+      </div>
+      <div  style="display: flex; align-items: center; gap: 10px;">
+        <el-input 
+          v-model="equipoA.nombre" 
+          placeholder="Nombre del Equipo 1"
+          style="width: 300px;"
+        ></el-input>
+        <el-input 
+          v-model="equipoB.nombre" 
+          placeholder="Nombre del Equipo 2"
+          style="width: 300px;"
+        ></el-input>
+      </div>
+      
     </div>
 
     <!-- Botones -->
