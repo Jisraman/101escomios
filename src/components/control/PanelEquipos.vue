@@ -79,7 +79,6 @@ export default {
       // Accedemos a los stores
       const storeEquipos = useEquiposStore();
       const storePreguntas = usePreguntasStore();
-
       // Reiniciar los estados de los stores
       storeEquipos.reiniciarPuntuaciones();
       storePreguntas.reiniciarPregunta();
@@ -94,6 +93,7 @@ export default {
       this.equipoB.nombre = "";
 
       console.log("Stores reseteados y mensaje enviado por el canal");
+      
     },
   },
   beforeDestroy() {

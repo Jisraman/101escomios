@@ -3,7 +3,7 @@
 
     <div style="display: flex; margin-left: auto; margin-right: auto; width: 70%; margin-top: 30px; margin-bottom: 30px;">
       <div style="display: flex; margin-left: auto; margin-right: auto; text-align: center;">
-        <el-button type="primary" @click="downloadTemplate">Bajar Plantilla Ejemplo Preguntas</el-button>
+        <el-button type="primary" @click="downloadTemplate">Bajar Plantilla Ejemplo de Preguntas</el-button>
       </div>
       <div style="display: block; margin-left: auto; margin-right: auto; ">
         <p style="display: flex; margin-left: auto; margin-right: auto;">Subir preguntas</p>
@@ -23,7 +23,7 @@
         :disabled="seleccionBloqueada"
       >
         <el-option 
-          v-for="(option, index) in options" 
+          v-for="(option, index) in storeData.preguntas" 
           :key="index" 
           :label="option.pregunta" 
           :value="option.pregunta" 
@@ -90,14 +90,16 @@
 import { usePreguntasStore } from '../../stores/store';
 import { useEquiposStore } from '../../stores/store';
 import * as XLSX from 'xlsx';
+import { useDataStore } from "../../stores/store";
+
 
 export default {
   name: "TablaPuntos",
   data() {
     return {
       selectedOption: null,           // Opción seleccionada
-      options: [],        // Lista de preguntas
       tableData: [],                  // Datos para la tabla
+      storeData: useDataStore(),
       storePreguntas: usePreguntasStore(),
       storeEquipos: useEquiposStore(),
       showQuestionClicked: false,     // Para saber si se mostró la pregunta
@@ -105,7 +107,8 @@ export default {
       soundChannel: null,             // Canal para el sonido
       acumulado: 0,                   // Puntaje acumulado
       botonesDeshabilitados: false,    // Estado para deshabilitar botones
-      seleccionBloqueada: false // Nuevo estado para bloquear select y botones
+      seleccionBloqueada: false, // Nuevo estado para bloquear select y botones
+      botonEnviadoPressed: false
     };
   },
   mounted() {
@@ -116,6 +119,17 @@ export default {
     if (!this.soundChannel) {
       this.soundChannel = new BroadcastChannel('sound_channel');
     }
+
+    this.broadcastChannel.onmessage = (event) =>{
+      if (event.data.action == 'reset') {
+        this.acumulado = 0;
+
+        this.seleccionBloqueada = false;
+        this.botonesDeshabilitados = false;
+        this.tableData = [];
+      }
+      
+    };
   },
   methods: {
     async loadQuestionsFromExcel(event) {
@@ -128,7 +142,8 @@ export default {
       const sheet = workbook.Sheets[sheetName];
 
       const rawData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-      this.options = rawData.slice(1).map(row => ({
+
+      this.storeData.preguntas = rawData.slice(1).map(row => ({
         pregunta: row[0],
         respuestas: [
           { respuesta: row[1] || '', popularidad: parseInt(row[2]) || 0 },
@@ -139,7 +154,7 @@ export default {
         ],
       }));
 
-      console.log("Preguntas cargadas:", this.options);
+      console.log("Preguntas cargadas:", this.storeData.preguntas);
     },
     downloadTemplate() {
       const templateData = [
@@ -163,19 +178,21 @@ export default {
         this.soundChannel.postMessage({ sound: "punto" });
 
         // Bloquea los controles de selección
-        this.seleccionBloqueada = true;
+        if(!this.botonEnviadoPressed){
+          this.seleccionBloqueada = true;
+        }
       }
       console.log(`Estado de fila cambiado: ${row.respuesta}`);
     },
     goToNextOption() {
-      const currentIndex = this.options.findIndex(option => option.pregunta === this.selectedOption);
-      const nextIndex = (currentIndex + 1) % this.options.length;
-      this.selectedOption = this.options[nextIndex].pregunta;
+      const currentIndex = this.storeData.preguntas.findIndex(option => option.pregunta === this.selectedOption);
+      const nextIndex = (currentIndex + 1) % this.storeData.preguntas.length;
+      this.selectedOption = this.storeData.preguntas[nextIndex].pregunta;
       console.log(`Opción seleccionada: ${this.selectedOption}`);
     },
     showQuestion() {
       this.storeEquipos.semiReiniciarPuntuaciones();
-      const selectedQuestion = this.options.find(option => option.pregunta === this.selectedOption);
+      const selectedQuestion = this.storeData.preguntas.find(option => option.pregunta === this.selectedOption);
       this.acumulado=0;
       this.broadcastChannel.postMessage({
           
@@ -194,6 +211,7 @@ export default {
 
         // Habilitar los botones nuevamente
         this.botonesDeshabilitados = false;
+        this.seleccionBloqueada = false;
 
         // Enviar pregunta al canal principal
         this.broadcastChannel.postMessage({
@@ -218,6 +236,10 @@ export default {
       }
     },
     enviarPuntaje(equipo) {
+       // Resetear acumulado, desbloquear controles y botones
+      this.botonEnviadoPressed = true;
+      this.botonesDeshabilitados = true;
+      this.seleccionBloqueada = false; // Desbloquear selección
       this.soundChannel.postMessage({ sound: "ganador" });
       if (equipo === 'A') {
         this.storeEquipos.actualizarPuntuacion('A', this.acumulado);
@@ -229,22 +251,25 @@ export default {
           }
         });
         console.log(`Puntaje del Equipo A enviado: ${this.acumulado}`);
-      } else if (equipo === 'B') {
+      } 
+      if (equipo === 'B') {
         this.storeEquipos.actualizarPuntuacion('B', this.acumulado);
         this.broadcastChannel.postMessage({
           action: "actualizarPuntuacion",
           equipoB: {
             nombre: this.storeEquipos.equipoB.nombre,
-            puntuacion: this.storeEquipos.equipoB.puntuacion,
+            puntuacion: this.storeEquipos.equipoB.puntuacion
           }
         });
         console.log(`Puntaje del Equipo B enviado: ${this.acumulado}`);
       }
+      this.acumulado=0;
+      this.broadcastChannel.postMessage({
+        acumulado:'cero'
+      });
 
-      // Resetear acumulado, desbloquear controles y botones
-      this.acumulado = 0;
-      this.botonesDeshabilitados = true;
-      this.seleccionBloqueada = false; // Desbloquear selección
+     
+      
     }
 
   }

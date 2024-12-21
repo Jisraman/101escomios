@@ -82,3 +82,20 @@ export const usePreguntasStore = defineStore('preguntas', {
     },
   },
 });
+
+// Store para las preguntas
+export const useDataStore = defineStore('data', {
+  state: () => ({
+    preguntas: [],
+  }),
+  actions: {
+    // Configura una nueva pregunta con respuestas
+    setPreguntas(preguntas) {
+      this.preguntas = preguntas;
+    },
+    // Selecciona una respuesta
+    reiniciarPreguntas() {
+      this.preguntas = [];
+    },
+  },
+});
